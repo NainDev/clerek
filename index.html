@@ -3,14 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MinesCek – Kasir Alfamart</title>
+  <title>MinesCek – Kasir Alfamart (Firebase)</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- ═══ FIREBASE SDK ═══ -->
+  <script type="module">
+    /**
+     * ╔══════════════════════════════════════════════════════════╗
+     * ║         LANGKAH SETUP FIREBASE (baca dulu!)             ║
+     * ╠══════════════════════════════════════════════════════════╣
+     * ║  1. Buka https://console.firebase.google.com            ║
+     * ║  2. Klik "Add project" → beri nama → Create             ║
+     * ║  3. Di dashboard, klik ikon </> (Web)                   ║
+     * ║  4. Daftarkan app → copy firebaseConfig di bawah        ║
+     * ║  5. Di sidebar kiri: Build → Realtime Database          ║
+     * ║  6. Create database → pilih region → Start in test mode ║
+     * ║  7. Paste config kamu ke bagian firebaseConfig bawah    ║
+     * ╚══════════════════════════════════════════════════════════╝
+     */
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue, remove, get }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // ═══ GANTI DENGAN CONFIG FIREBASE KAMU ═══
+    const firebaseConfig = {
+      apiKey:            "GANTI_API_KEY_KAMU",
+      authDomain:        "GANTI.firebaseapp.com",
+      databaseURL:       "https://GANTI-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId:         "GANTI",
+      storageBucket:     "GANTI.appspot.com",
+      messagingSenderId: "GANTI",
+      appId:             "GANTI"
+    };
+    // ══════════════════════════════════════════
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    // Expose ke window supaya bisa dipakai dari script biasa
+    window._fb = { db, ref, set, push, onValue, remove, get };
+    window._fbReady = true;
+    document.dispatchEvent(new Event('fb-ready'));
+  </script>
+
   <style>
     :root {
-      --blue-deep:#0f2a5e; --blue-mid:#1a56db; --blue-light:#60a5fa;
-      --blue-pale:#eff6ff; --white:#ffffff;
+      --blue-deep:#0f2a5e; --blue-mid:#1a56db;
       --glass-bg:rgba(255,255,255,0.72); --glass-border:rgba(148,187,255,0.35);
       --shadow-blue:0 8px 32px rgba(26,86,219,0.12);
     }
@@ -20,34 +61,26 @@
     #sidebar{background:linear-gradient(160deg,#0f2a5e 0%,#1a56db 60%,#2563eb 100%);box-shadow:4px 0 32px rgba(15,42,94,0.25);}
     .nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;border-radius:12px;color:rgba(255,255,255,0.72);cursor:pointer;font-size:14px;font-weight:500;transition:all .22s ease;}
     .nav-item:hover{background:rgba(255,255,255,0.12);color:#fff;}
-    .nav-item.active{background:rgba(255,255,255,0.18);color:#fff;font-weight:600;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+    .nav-item.active{background:rgba(255,255,255,0.18);color:#fff;font-weight:600;}
     .glass{background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(12px);border-radius:20px;box-shadow:var(--shadow-blue);}
     .stat-card{border-radius:20px;overflow:hidden;position:relative;}
     .stat-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.12);}
     .inp{width:100%;border-radius:12px;border:1.5px solid #bfdbfe;padding:10px 14px;background:#f0f7ff;font-size:14px;color:#1e3a5f;outline:none;transition:border .2s;font-family:'DM Sans',sans-serif;}
     .inp:focus{border-color:#1a56db;background:#fff;box-shadow:0 0 0 3px rgba(26,86,219,0.1);}
-    select.inp{appearance:none;cursor:pointer;}
     label.lbl{font-size:13px;font-weight:600;color:#1e3a5f;margin-bottom:4px;display:block;}
-    .btn-primary{background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;box-shadow:0 4px 14px rgba(26,86,219,0.3);font-family:'DM Sans',sans-serif;}
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(26,86,219,0.38);}
     .btn-tambah{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;box-shadow:0 4px 14px rgba(220,38,38,0.3);font-family:'DM Sans',sans-serif;flex:1;}
-    .btn-tambah:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(220,38,38,0.38);}
+    .btn-tambah:hover{transform:translateY(-2px);}
     .btn-kurang{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;box-shadow:0 4px 14px rgba(5,150,105,0.3);font-family:'DM Sans',sans-serif;flex:1;}
-    .btn-kurang:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(5,150,105,0.38);}
-    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
-    .btn-danger:hover{opacity:.85;}
+    .btn-kurang:hover{transform:translateY(-2px);}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
     .badge-tambah{background:#fee2e2;color:#dc2626;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600;}
     .badge-kurang{background:#dcfce7;color:#16a34a;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600;}
-    .page{display:none;}
-    .page.active{display:block;}
-    ::-webkit-scrollbar{width:6px;}
-    ::-webkit-scrollbar-track{background:#f0f7ff;}
-    ::-webkit-scrollbar-thumb{background:#93c5fd;border-radius:8px;}
+    .page{display:none;} .page.active{display:block;}
+    ::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-thumb{background:#93c5fd;border-radius:8px;}
     table{width:100%;border-collapse:collapse;}
     th{text-align:left;font-size:12px;font-weight:600;color:#6b9fd4;text-transform:uppercase;letter-spacing:.04em;padding:10px 14px;border-bottom:1.5px solid #dbeafe;}
     td{padding:12px 14px;border-bottom:1px solid #f0f7ff;font-size:13.5px;}
-    tr:hover td{background:#f8fbff;}
-    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:#f8fbff;} tr:last-child td{border-bottom:none;}
     #toast{position:fixed;bottom:28px;right:28px;z-index:9999;background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff;border-radius:14px;padding:14px 22px;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(26,86,219,0.35);transform:translateY(80px);opacity:0;transition:all .35s ease;pointer-events:none;}
     #toast.show{transform:translateY(0);opacity:1;}
     #overlay{display:none;position:fixed;inset:0;background:rgba(15,42,94,0.45);z-index:40;}
@@ -57,21 +90,54 @@
     .mines-danger{animation:pulse-mines 2s infinite;}
     @keyframes pulse-lebih{0%,100%{box-shadow:0 8px 32px rgba(26,86,219,0.3)}50%{box-shadow:0 8px 48px rgba(26,86,219,0.55)}}
     .mines-lebih{animation:pulse-lebih 2s infinite;}
-    @media(max-width:768px){
-      #sidebar{position:fixed;left:-280px;top:0;bottom:0;z-index:50;transition:left .3s ease;width:260px!important;}
-      #sidebar.open{left:0;}
-      #overlay.show{display:block;}
-      #main-content{margin-left:0!important;}
-    }
+    @media(max-width:768px){#sidebar{position:fixed;left:-280px;top:0;bottom:0;z-index:50;transition:left .3s ease;width:260px!important;} #sidebar.open{left:0;} #overlay.show{display:block;} #main-content{margin-left:0!important;}}
     .quick-btn{background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:600;color:#1a56db;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;}
-    .quick-btn:hover{background:#dbeafe;border-color:#93c5fd;}
+    .quick-btn:hover{background:#dbeafe;}
     .progress-ring-circle{transition:stroke-dashoffset 0.6s ease;}
+
+    /* ── Status bar Firebase ── */
+    #fb-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;transition:all .3s;}
+    #fb-status.online{background:#dcfce7;color:#16a34a;}
+    #fb-status.offline{background:#fee2e2;color:#dc2626;}
+    #fb-status.connecting{background:#fef9c3;color:#854d0e;}
+
+    /* ── Setup modal ── */
+    #setup-modal{display:none;position:fixed;inset:0;background:rgba(15,42,94,0.6);z-index:100;align-items:center;justify-content:center;}
+    #setup-modal.show{display:flex;}
+    .modal-box{background:#fff;border-radius:24px;padding:32px;max-width:500px;width:90%;box-shadow:0 24px 80px rgba(15,42,94,0.3);}
+    .setup-step{background:#f0f7ff;border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:13px;color:#1e3a5f;border-left:4px solid #1a56db;}
+    .setup-step b{display:block;font-size:11px;color:#6b9fd4;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
   </style>
 </head>
 <body>
 
 <div id="toast"></div>
 <div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ══ SETUP MODAL ══ -->
+<div id="setup-modal">
+  <div class="modal-box">
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;color:#0f2a5e;margin-bottom:6px">
+      🔧 Setup Firebase Dulu
+    </div>
+    <p style="font-size:13px;color:#6b9fd4;margin-bottom:20px">
+      File ini belum terhubung ke Firebase. Ikuti langkah berikut:
+    </p>
+    <div class="setup-step"><b>Langkah 1</b>Buka <a href="https://console.firebase.google.com" target="_blank" style="color:#1a56db">console.firebase.google.com</a> → buat project baru</div>
+    <div class="setup-step"><b>Langkah 2</b>Klik ikon <code>&lt;/&gt;</code> (Web) → daftarkan app</div>
+    <div class="setup-step"><b>Langkah 3</b>Buka <strong>Build → Realtime Database</strong> → Create database → pilih region → <em>Start in test mode</em></div>
+    <div class="setup-step"><b>Langkah 4</b>Copy <code>firebaseConfig</code> dari Project Settings → paste ke bagian atas file HTML ini (ganti teks <code>GANTI_...</code>)</div>
+    <div class="setup-step"><b>Langkah 5</b>Buka file lagi di browser — aplikasi langsung tersambung!</div>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="https://console.firebase.google.com" target="_blank" style="background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff;border:none;border-radius:12px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;">
+        🚀 Buka Firebase Console
+      </a>
+      <button onclick="closeModal()" style="background:#f0f7ff;border:1.5px solid #bfdbfe;color:#1a56db;border-radius:12px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;">
+        Tutup
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="flex min-h-screen">
 
@@ -87,26 +153,18 @@
         </div>
         <div>
           <div class="text-white font-display text-lg leading-tight">MinesCek</div>
-          <div class="text-blue-200 text-xs">Kasir Alfamart</div>
+          <div class="text-blue-200 text-xs">Kasir Alfamart + Firebase</div>
         </div>
       </div>
     </div>
     <nav class="flex flex-col gap-1 flex-1">
-      <div class="nav-item active" onclick="navigate('dashboard')">
-        <i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard
-      </div>
-      <div class="nav-item" onclick="navigate('catat')">
-        <i data-lucide="plus-circle" style="width:18px;height:18px"></i> Catat Transaksi
-      </div>
-      <div class="nav-item" onclick="navigate('riwayat')">
-        <i data-lucide="list" style="width:18px;height:18px"></i> Riwayat Shift Ini
-      </div>
-      <div class="nav-item" onclick="navigate('history')">
-        <i data-lucide="calendar-days" style="width:18px;height:18px"></i> Histori Shift
-      </div>
+      <div class="nav-item active" onclick="navigate('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
+      <div class="nav-item" onclick="navigate('catat')"><i data-lucide="plus-circle" style="width:18px;height:18px"></i> Catat Transaksi</div>
+      <div class="nav-item" onclick="navigate('riwayat')"><i data-lucide="list" style="width:18px;height:18px"></i> Riwayat Shift Ini</div>
+      <div class="nav-item" onclick="navigate('history')"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> Histori Shift</div>
     </nav>
     <div class="mt-4 pt-4 border-t border-white/15">
-      <button onclick="mulaiShiftBaru()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2)">
+      <button onclick="mulaiShiftBaru()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2)">
         <i data-lucide="refresh-cw" style="width:15px;height:15px"></i> Mulai Shift Baru
       </button>
       <div class="mt-3 flex items-center gap-3 px-2">
@@ -134,29 +192,49 @@
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <div id="topbar-shift" class="hidden sm:flex items-center gap-2 bg-blue-50 rounded-xl px-4 py-2">
-          <i data-lucide="clock" style="width:14px;height:14px;color:#1a56db"></i>
-          <span class="text-xs text-blue-600 font-medium" id="topbar-shift-label">Shift #1</span>
+        <!-- Status Firebase -->
+        <div id="fb-status" class="connecting">
+          <span id="fb-dot">◉</span>
+          <span id="fb-label">Menghubungkan...</span>
         </div>
+        <button onclick="showSetup()" title="Setup Firebase" style="background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:6px 10px;cursor:pointer;font-size:11px;font-weight:600;color:#1a56db;">
+          ⚙ Setup
+        </button>
       </div>
     </div>
 
     <div class="p-5 md:p-7 max-w-5xl mx-auto">
 
-      <!-- ══════ DASHBOARD ══════ -->
+      <!-- ══ KASIR SELECTOR ══ -->
+      <div class="glass p-4 mb-6 flex flex-wrap gap-4 items-center">
+        <div>
+          <label class="lbl">ID Kasir / Nama Kamu</label>
+          <input type="text" id="kasir-id" class="inp" style="width:200px" placeholder="Contoh: kasir01" oninput="gantKasir()" />
+        </div>
+        <div>
+          <label class="lbl">Shift ke-</label>
+          <input type="number" id="shift-input" class="inp" style="width:100px" min="1" value="1" oninput="gantShift()" />
+        </div>
+        <div class="flex-1">
+          <label class="lbl">Path Firebase aktif</label>
+          <div id="fb-path" style="font-size:12px;font-family:monospace;background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:8px 12px;color:#6b9fd4;">
+            minescek / kasir01 / shift_1
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DASHBOARD ══ -->
       <div id="page-dashboard" class="page active fade-up">
 
         <!-- Banner -->
         <div class="mb-7 rounded-3xl overflow-hidden relative" style="background:linear-gradient(120deg,#0c1f5e 0%,#1a4fd8 45%,#3b82f6 75%,#93c5fd 100%);padding:28px 32px;box-shadow:0 12px 48px rgba(26,86,219,0.28)">
-          <div style="position:absolute;top:-40px;right:60px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none"></div>
-          <div style="position:absolute;bottom:-30px;right:20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.09);pointer-events:none"></div>
           <div class="relative flex items-center justify-between flex-wrap gap-4">
             <div>
               <div style="font-size:11px;color:rgba(186,216,255,0.85);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">Selamat Bertugas 👋</div>
               <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(20px,4vw,28px);color:#ffffff;line-height:1.2;margin-bottom:6px">Pantau Mines Kasirmu! 💰</div>
-              <div style="font-size:13px;color:rgba(186,216,255,0.8)">Catat setiap kelebihan kembalian agar kliring tepat sasaran.</div>
+              <div style="font-size:13px;color:rgba(186,216,255,0.8)">Data tersimpan di Firebase — bisa diakses dari HP & PC sekaligus.</div>
             </div>
-            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:18px;padding:14px 22px;text-align:center;backdrop-filter:blur(8px)">
+            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:18px;padding:14px 22px;text-align:center;">
               <div style="font-size:11px;color:rgba(186,216,255,0.8);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Hari Ini</div>
               <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:#fff" id="greeting-date"></div>
             </div>
@@ -164,18 +242,16 @@
         </div>
 
         <!-- Mines Big Card -->
-        <div id="mines-card" class="stat-card p-7 text-white mb-7" style="background:linear-gradient(145deg,#4a0010 0%,#c0132e 45%,#f43f5e 80%,#fda4af 100%);">
+        <div id="mines-card" class="stat-card p-7 text-white mb-7" style="background:linear-gradient(145deg,#013d29 0%,#057a55 45%,#10b981 80%,#6ee7b7 100%);">
           <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);border-radius:20px;pointer-events:none"></div>
-          <div style="position:absolute;top:-18px;right:-18px;width:140px;height:140px;border-radius:50%;background:rgba(253,164,175,0.15);pointer-events:none"></div>
           <div class="relative flex flex-wrap items-center justify-between gap-6">
             <div>
               <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(254,205,211,0.85);margin-bottom:10px;display:flex;align-items:center;gap:6px" id="mines-card-label">
-                <i data-lucide="alert-triangle" style="width:14px;height:14px"></i> Total Mines Shift Ini
+                <i data-lucide="check-circle" style="width:14px;height:14px"></i> Total Mines Shift Ini
               </div>
               <div id="total-mines-display" class="font-display" style="font-size:clamp(28px,5vw,44px);margin-bottom:6px;line-height:1.1">Rp 0</div>
-              <div style="font-size:13px;color:rgba(254,205,211,0.75)" id="mines-status-text">Aman! Tidak ada mines.</div>
+              <div style="font-size:13px;color:rgba(254,205,211,0.75)" id="mines-status-text">✅ Aman! Tidak ada mines.</div>
             </div>
-            <!-- Ring indicator -->
             <div style="flex-shrink:0;text-align:center">
               <svg width="100" height="100" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="8"/>
@@ -186,15 +262,14 @@
               <div style="font-size:11px;color:rgba(254,205,211,0.7);margin-top:4px">Modal: <span id="modal-display">Rp 200.000</span></div>
             </div>
           </div>
-          <!-- Progress bar -->
           <div style="margin-top:20px;height:6px;border-radius:6px;background:rgba(255,255,255,0.15);overflow:hidden">
             <div id="mines-bar" style="height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.6),rgba(253,164,175,0.9));transition:width .6s ease"></div>
           </div>
         </div>
 
-        <!-- Stat Cards Row -->
+        <!-- Stat Row -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-7">
-          <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#4a0010 0%,#c0132e 45%,#f43f5e 80%,#fda4af 100%);box-shadow:0 8px 32px rgba(74,0,16,0.3)">
+          <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#4a0010 0%,#c0132e 45%,#f43f5e 80%,#fda4af 100%);">
             <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);border-radius:20px;pointer-events:none"></div>
             <div class="relative">
               <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(254,205,211,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px">
@@ -204,7 +279,7 @@
               <div style="font-size:11px;color:rgba(254,205,211,0.6)" id="stat-tambah-count">0 transaksi</div>
             </div>
           </div>
-          <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#013d29 0%,#057a55 45%,#10b981 80%,#6ee7b7 100%);box-shadow:0 8px 32px rgba(1,61,41,0.3)">
+          <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#013d29 0%,#057a55 45%,#10b981 80%,#6ee7b7 100%);">
             <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);border-radius:20px;pointer-events:none"></div>
             <div class="relative">
               <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(167,243,208,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px">
@@ -214,7 +289,7 @@
               <div style="font-size:11px;color:rgba(167,243,208,0.6)" id="stat-kurang-count">0 transaksi</div>
             </div>
           </div>
-          <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#1a0550 0%,#5b21b6 45%,#8b5cf6 80%,#c4b5fd 100%);box-shadow:0 8px 32px rgba(26,5,80,0.3)">
+          <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#1a0550 0%,#5b21b6 45%,#8b5cf6 80%,#c4b5fd 100%);">
             <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);border-radius:20px;pointer-events:none"></div>
             <div class="relative">
               <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(221,214,254,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px">
@@ -226,57 +301,22 @@
           </div>
         </div>
 
-        <!-- Kliring Check -->
-        <div class="glass p-6 mb-7">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-display text-base text-blue-900">Cek Kliring Sekarang</h3>
-            <span class="text-xs text-blue-400 bg-blue-50 px-3 py-1 rounded-full">Simulasi</span>
-          </div>
-          <div class="flex flex-wrap gap-3 items-end">
-            <div class="flex-1 min-w-40">
-              <label class="lbl">Modal Kasir (Rp)</label>
-              <input type="number" id="modal-input" class="inp" value="200000" oninput="updateModal()" />
-            </div>
-            <div class="flex-1 min-w-40">
-              <label class="lbl">Uang di Laci Saat Ini (Rp)</label>
-              <input type="number" id="laci-input" class="inp" placeholder="Hitung uang di laci..." oninput="cekKliring()" />
-            </div>
-            <div class="flex-1 min-w-40">
-              <label class="lbl">Total Setoran</label>
-              <input type="number" id="setoran-input" class="inp" placeholder="Jumlah setoran ke SC..." oninput="cekKliring()" />
-            </div>
-          </div>
-          <div id="kliring-result" class="mt-4 rounded-2xl p-4 hidden">
-            <div class="flex items-center gap-3">
-              <div id="kliring-icon" class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"></div>
-              <div>
-                <div class="font-display text-base" id="kliring-title"></div>
-                <div class="text-sm text-blue-600 mt-1" id="kliring-detail"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Transaksi Terbaru -->
         <div class="glass p-5">
           <div class="flex items-center justify-between mb-4">
             <h3 class="font-display text-base text-blue-900">Transaksi Terbaru</h3>
             <button onclick="navigate('riwayat')" class="text-xs text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</button>
           </div>
-          <div id="recent-list">
-            <div class="text-center text-blue-300 py-8 text-sm">Belum ada transaksi shift ini</div>
-          </div>
+          <div id="recent-list"><div class="text-center text-blue-300 py-8 text-sm">Menghubungkan ke Firebase...</div></div>
         </div>
       </div>
 
-      <!-- ══════ CATAT TRANSAKSI ══════ -->
+      <!-- ══ CATAT TRANSAKSI ══ -->
       <div id="page-catat" class="page fade-up">
         <div class="max-w-xl mx-auto">
           <div class="glass p-7">
             <h2 class="font-display text-xl text-blue-900 mb-2">Catat Transaksi Mines</h2>
-            <p class="text-sm text-blue-400 mb-6">Tambah = mines naik (kasih kembalian lebih). Kurang = mines turun (terima lebih / koreksi).</p>
-
-            <!-- Amount Quick Buttons -->
+            <p class="text-sm text-blue-400 mb-6">Tambah = mines naik. Kurang = mines turun / koreksi.</p>
             <div class="mb-5">
               <label class="lbl">Nominal Cepat</label>
               <div class="flex flex-wrap gap-2 mt-2">
@@ -288,7 +328,6 @@
                 <button class="quick-btn" onclick="setQuick(5000)">+5.000</button>
               </div>
             </div>
-
             <div class="space-y-4">
               <div>
                 <label class="lbl">Jumlah (Rp)</label>
@@ -296,70 +335,49 @@
               </div>
               <div>
                 <label class="lbl">Keterangan (opsional)</label>
-                <input type="text" id="c-ket" class="inp" placeholder="Contoh: kembalian ke pelanggan no. struk 0042" />
+                <input type="text" id="c-ket" class="inp" placeholder="Contoh: kembalian struk 0042" />
               </div>
               <div>
                 <label class="lbl">Waktu</label>
                 <input type="time" id="c-waktu" class="inp" />
               </div>
-
               <div class="flex gap-3 mt-2">
-                <button class="btn-tambah" onclick="catat('tambah')">
-                  ▲ TAMBAH MINES
-                </button>
-                <button class="btn-kurang" onclick="catat('kurang')">
-                  ▼ KURANG MINES
-                </button>
+                <button class="btn-tambah" onclick="catat('tambah')">▲ TAMBAH MINES</button>
+                <button class="btn-kurang" onclick="catat('kurang')">▼ KURANG MINES</button>
               </div>
             </div>
-
-            <!-- Live preview -->
             <div class="mt-5 p-4 rounded-2xl" style="background:#f0f7ff;border:1.5px solid #dbeafe">
-              <div class="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-1">Setelah transaksi ini, mines akan jadi:</div>
-              <div class="font-display text-2xl text-blue-900" id="preview-mines">Rp 0</div>
+              <div class="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-1">Preview setelah transaksi:</div>
+              <div class="font-display text-xl text-blue-900" id="preview-mines">Rp 0</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══════ RIWAYAT SHIFT INI ══════ -->
+      <!-- ══ RIWAYAT ══ -->
       <div id="page-riwayat" class="page fade-up">
-        <div class="glass p-4 mb-5">
-          <div class="flex flex-wrap gap-3 items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="font-display text-sm text-blue-900" id="riwayat-shift-title">Shift #1</div>
-              <div id="riwayat-date" class="text-xs text-blue-400"></div>
-            </div>
-            <div class="flex gap-2">
-              <input type="text" id="r-cari" class="inp" placeholder="Cari..." style="width:180px" oninput="renderRiwayat()" />
-            </div>
+        <div class="glass p-4 mb-5 flex flex-wrap gap-3 items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="font-display text-sm text-blue-900" id="riwayat-shift-title">Shift #1</div>
+            <div id="riwayat-date" class="text-xs text-blue-400"></div>
           </div>
+          <input type="text" id="r-cari" class="inp" placeholder="Cari..." style="width:180px" oninput="renderRiwayat()" />
         </div>
         <div class="glass overflow-hidden">
           <div class="overflow-x-auto">
             <table>
-              <thead>
-                <tr>
-                  <th>Waktu</th>
-                  <th>Tipe</th>
-                  <th>Keterangan</th>
-                  <th class="text-right">Jumlah</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="tbody-riwayat">
-                <tr><td colspan="5" class="text-center text-blue-300 py-10">Belum ada data</td></tr>
-              </tbody>
+              <thead><tr><th>Waktu</th><th>Tipe</th><th>Keterangan</th><th class="text-right">Jumlah</th><th>Aksi</th></tr></thead>
+              <tbody id="tbody-riwayat"><tr><td colspan="5" class="text-center text-blue-300 py-10">Memuat data...</td></tr></tbody>
             </table>
           </div>
           <div id="riwayat-summary" class="px-5 py-4 border-t border-blue-50 flex flex-wrap gap-4 text-sm font-semibold text-blue-800"></div>
         </div>
       </div>
 
-      <!-- ══════ HISTORI SHIFT ══════ -->
+      <!-- ══ HISTORI SHIFT ══ -->
       <div id="page-history" class="page fade-up">
         <div class="grid grid-cols-1 gap-4" id="history-grid">
-          <div class="glass p-8 text-center text-blue-300">Belum ada shift yang tersimpan</div>
+          <div class="glass p-8 text-center text-blue-300">Memuat histori...</div>
         </div>
       </div>
 
@@ -368,34 +386,35 @@
 </div>
 
 <script>
-const DB = 'minescek_v1';
-const DB_HISTORY = 'minescek_history_v1';
+// ═══ STATE ═══
+let kasirId   = 'kasir01';
+let shiftNum  = 1;
+let modal     = 200000;
+let transaksi = [];   // cache lokal dari Firebase listener
+let histShifts = [];  // cache histori shift
 
-let data = {shift:1, tanggal:'', modal:200000, transaksi:[]};
-let history = [];
+// ═══ HELPERS ═══
+const fmtAbs  = n => 'Rp ' + Number(Math.abs(n||0)).toLocaleString('id-ID');
+const nowDate = () => new Date();
+const todayFmt = () => nowDate().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const todayStr = () => nowDate().toISOString().split('T')[0];
+const timeNow  = () => nowDate().toTimeString().slice(0,5);
 
-function save(){ localStorage.setItem(DB, JSON.stringify(data)); }
-function saveHistory(){ localStorage.setItem(DB_HISTORY, JSON.stringify(history)); }
-function load(){
-  try{ data = JSON.parse(localStorage.getItem(DB)) || {shift:1,tanggal:'',modal:200000,transaksi:[]}; }
-  catch{ data={shift:1,tanggal:'',modal:200000,transaksi:[]}; }
-  try{ history = JSON.parse(localStorage.getItem(DB_HISTORY)) || []; }
-  catch{ history=[]; }
+function fbPath(sub='') {
+  const base = `minescek/${kasirId}/shift_${shiftNum}`;
+  return sub ? `${base}/${sub}` : base;
 }
 
-// Format rupiah (selalu positif, tanpa tanda minus)
-const fmtAbs = n => 'Rp ' + Number(Math.abs(n||0)).toLocaleString('id-ID');
-
-const now = () => new Date();
-const todayStr = () => now().toISOString().split('T')[0];
-const todayFmt = () => now().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-const timeNow = () => now().toTimeString().slice(0,5);
+function updatePathDisplay(){
+  document.getElementById('fb-path').textContent = `minescek / ${kasirId} / shift_${shiftNum}`;
+}
 
 function toast(msg){
   const t=document.getElementById('toast'); t.textContent=msg;
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800);
 }
 
+// ═══ NAVIGASI ═══
 const pageMap={dashboard:'Dashboard',catat:'Catat Transaksi',riwayat:'Riwayat Shift Ini',history:'Histori Shift'};
 function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -404,154 +423,188 @@ function navigate(page){
   document.getElementById('page-title').textContent=pageMap[page];
   document.querySelectorAll('.nav-item').forEach(n=>{ if(n.getAttribute('onclick')?.includes("'"+page+"'")) n.classList.add('active'); });
   closeSidebar();
-  if(page==='dashboard') renderDashboard();
   if(page==='riwayat') renderRiwayat();
   if(page==='history') renderHistory();
 }
-
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
 
-// Hitung mines: positif = kasir masih hutang, negatif = kasir lebih/surplus
-function getMines(){
-  return data.transaksi.reduce((a,t)=> t.tipe==='tambah' ? a+t.jumlah : a-t.jumlah, 0);
+// ═══ GANTI KASIR / SHIFT ═══
+function gantKasir(){
+  const val = document.getElementById('kasir-id').value.trim();
+  if(val) { kasirId = val; subscribeShift(); }
+  updatePathDisplay();
+}
+function gantShift(){
+  const val = parseInt(document.getElementById('shift-input').value) || 1;
+  shiftNum = val;
+  subscribeShift();
+  updatePathDisplay();
 }
 
-function setQuick(n){
-  document.getElementById('c-jumlah').value=n;
-  updatePreview();
+// ═══ FIREBASE: SUBSCRIBE REALTIME ═══
+let _unsubscribe = null;
+function subscribeShift(){
+  if(!window._fbReady){ return; }
+  const { db, ref, onValue } = window._fb;
+
+  // Batal listener lama
+  if(_unsubscribe) _unsubscribe();
+
+  const trxRef = ref(db, fbPath('transaksi'));
+  _unsubscribe = onValue(trxRef, (snap) => {
+    const raw = snap.val() || {};
+    // Ubah objek Firebase jadi array, urut waktu
+    transaksi = Object.entries(raw).map(([fbKey, v]) => ({...v, fbKey}))
+      .sort((a,b) => a.id - b.id);
+    renderDashboard();
+    renderRiwayat();
+  }, (err) => {
+    setFbStatus('offline');
+    console.error('Firebase error:', err);
+  });
+
+  // Baca modal
+  const modalRef = ref(db, fbPath('modal'));
+  onValue(modalRef, (snap) => {
+    if(snap.val()) modal = snap.val();
+    document.getElementById('modal-display').textContent = fmtAbs(modal);
+  });
+
+  setFbStatus('online');
 }
 
-function updatePreview(){
-  const jml=parseFloat(document.getElementById('c-jumlah').value)||0;
-  const cur=getMines();
-  const afterTambah = cur + jml;
-  const afterKurang = cur - jml;
-  const prev = document.getElementById('preview-mines');
-
-  const labelAfterTambah = afterTambah > 0
-    ? fmtAbs(afterTambah) + ' mines'
-    : afterTambah === 0
-      ? 'Rp 0 (Aman)'
-      : '+' + fmtAbs(afterTambah) + ' (Lebih/Surplus)';
-
-  const labelAfterKurang = afterKurang > 0
-    ? fmtAbs(afterKurang) + ' mines'
-    : afterKurang === 0
-      ? 'Rp 0 (Aman)'
-      : '+' + fmtAbs(afterKurang) + ' (Lebih/Surplus)';
-
-  prev.textContent = '▲ ' + labelAfterTambah + '  /  ▼ ' + labelAfterKurang;
-}
-
-function updateModal(){
-  data.modal=parseFloat(document.getElementById('modal-input').value)||200000;
-  save(); renderDashboard();
-}
-
-function catat(tipe){
-  const jml=parseFloat(document.getElementById('c-jumlah').value);
+// ═══ FIREBASE: TULIS TRANSAKSI ═══
+async function catat(tipe){
+  if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); showSetup(); return; }
+  const jml = parseFloat(document.getElementById('c-jumlah').value);
   if(!jml||jml<=0){ toast('⚠ Masukkan jumlah yang valid!'); return; }
-  const ket=document.getElementById('c-ket').value.trim();
-  const wkt=document.getElementById('c-waktu').value||timeNow();
-  const trx={id:Date.now(), tipe, jumlah:jml, keterangan:ket||'-', waktu:wkt};
-  data.transaksi.push(trx);
-  save();
-  document.getElementById('c-jumlah').value='';
-  document.getElementById('c-ket').value='';
-  document.getElementById('c-waktu').value=timeNow();
+  const ket = document.getElementById('c-ket').value.trim();
+  const wkt = document.getElementById('c-waktu').value || timeNow();
+
+  const { db, ref, push, set } = window._fb;
+  const newRef = push(ref(db, fbPath('transaksi')));
+  await set(newRef, { id: Date.now(), tipe, jumlah: jml, keterangan: ket||'-', waktu: wkt });
+
+  document.getElementById('c-jumlah').value = '';
+  document.getElementById('c-ket').value = '';
+  document.getElementById('c-waktu').value = timeNow();
   updatePreview();
-  toast(tipe==='tambah'?'▲ Mines ditambah: '+fmtAbs(jml):'▼ Mines dikurangi: '+fmtAbs(jml));
-  renderDashboard();
+  toast(tipe==='tambah' ? '▲ Mines ditambah: '+fmtAbs(jml) : '▼ Mines dikurangi: '+fmtAbs(jml));
 }
 
-function hapus(id){
+// ═══ FIREBASE: HAPUS TRANSAKSI ═══
+async function hapus(fbKey){
   if(!confirm('Hapus transaksi ini?')) return;
-  data.transaksi=data.transaksi.filter(t=>t.id!==id);
-  save(); renderRiwayat(); renderDashboard(); toast('✓ Dihapus');
+  if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); return; }
+  const { db, ref, remove } = window._fb;
+  await remove(ref(db, fbPath('transaksi/'+fbKey)));
+  toast('✓ Dihapus');
 }
 
+// ═══ FIREBASE: MULAI SHIFT BARU ═══
+async function mulaiShiftBaru(){
+  if(!confirm('Simpan shift ini ke histori dan mulai shift baru?')) return;
+  if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); showSetup(); return; }
+  const { db, ref, set } = window._fb;
+
+  // Simpan shift ini ke histori
+  const histRef = ref(db, `minescek/${kasirId}/histori/shift_${shiftNum}`);
+  await set(histRef, {
+    shift: shiftNum, tanggal: todayStr(), modal,
+    transaksi: transaksi.reduce((acc, t) => { acc[t.fbKey] = {id:t.id,tipe:t.tipe,jumlah:t.jumlah,keterangan:t.keterangan,waktu:t.waktu}; return acc; }, {})
+  });
+
+  // Mulai shift baru
+  shiftNum++;
+  document.getElementById('shift-input').value = shiftNum;
+  const newShiftRef = ref(db, fbPath('transaksi'));
+  await set(newShiftRef, null);
+  subscribeShift();
+  updatePathDisplay();
+  toast('✅ Shift #'+shiftNum+' dimulai!');
+}
+
+// ═══ KALKULASI ═══
+function getMines(){
+  return transaksi.reduce((a,t)=> t.tipe==='tambah' ? a+t.jumlah : a-t.jumlah, 0);
+}
+
+function setQuick(n){ document.getElementById('c-jumlah').value=n; updatePreview(); }
+function updatePreview(){
+  const jml = parseFloat(document.getElementById('c-jumlah').value)||0;
+  const cur  = getMines();
+  const aft  = cur + jml;
+  const afk  = cur - jml;
+  const lbl  = v => v>0 ? fmtAbs(v)+' mines' : v===0 ? 'Rp 0 (Aman)' : '+'+fmtAbs(v)+' (Lebih)';
+  document.getElementById('preview-mines').textContent = '▲ '+lbl(aft)+'  /  ▼ '+lbl(afk);
+}
+
+// ═══ RENDER DASHBOARD ═══
 function renderDashboard(){
   const mines = getMines();
-  const modal = data.modal || 200000;
-  const tambahTotal = data.transaksi.filter(t=>t.tipe==='tambah').reduce((a,t)=>a+t.jumlah,0);
-  const kurangTotal = data.transaksi.filter(t=>t.tipe==='kurang').reduce((a,t)=>a+t.jumlah,0);
-  const cTambah = data.transaksi.filter(t=>t.tipe==='tambah').length;
-  const cKurang = data.transaksi.filter(t=>t.tipe==='kurang').length;
+  const tambahTotal = transaksi.filter(t=>t.tipe==='tambah').reduce((a,t)=>a+t.jumlah,0);
+  const kurangTotal = transaksi.filter(t=>t.tipe==='kurang').reduce((a,t)=>a+t.jumlah,0);
+  const cTambah = transaksi.filter(t=>t.tipe==='tambah').length;
+  const cKurang = transaksi.filter(t=>t.tipe==='kurang').length;
+  const circumference = 263.9;
 
-  document.getElementById('stat-tambah').textContent = fmtAbs(tambahTotal);
-  document.getElementById('stat-kurang').textContent = fmtAbs(kurangTotal);
-  document.getElementById('stat-total-trx').textContent = data.transaksi.length;
+  document.getElementById('stat-tambah').textContent       = fmtAbs(tambahTotal);
+  document.getElementById('stat-kurang').textContent       = fmtAbs(kurangTotal);
+  document.getElementById('stat-total-trx').textContent    = transaksi.length;
   document.getElementById('stat-tambah-count').textContent = cTambah+' transaksi';
   document.getElementById('stat-kurang-count').textContent = cKurang+' transaksi';
-  document.getElementById('stat-shift-num').textContent = 'Shift #'+data.shift;
-  document.getElementById('modal-display').textContent = fmtAbs(modal);
-  document.getElementById('modal-input').value = modal;
-  document.getElementById('sidebar-shift-info').textContent = 'Shift #'+data.shift+' aktif';
-  document.getElementById('topbar-shift-label').textContent = 'Shift #'+data.shift;
+  document.getElementById('stat-shift-num').textContent    = 'Shift #'+shiftNum;
+  document.getElementById('sidebar-shift-info').textContent= 'Shift #'+shiftNum+' aktif';
 
   const card = document.getElementById('mines-card');
   const displayEl = document.getElementById('total-mines-display');
-  const statusEl = document.getElementById('mines-status-text');
-  const labelEl = document.getElementById('mines-card-label');
-  const ringEl = document.getElementById('mines-ring');
-  const ringPctEl = document.getElementById('ring-pct');
-  const ringLabelEl = document.getElementById('ring-label');
-  const barEl = document.getElementById('mines-bar');
-  const circumference = 263.9;
+  const statusEl  = document.getElementById('mines-status-text');
+  const labelEl   = document.getElementById('mines-card-label');
+  const ringEl    = document.getElementById('mines-ring');
+  const barEl     = document.getElementById('mines-bar');
 
-  if (mines > 0) {
-    // Ada mines — merah, pulsing
-    const pct = Math.min(mines / modal * 100, 100);
+  if(mines > 0){
+    const pct = Math.min(mines/modal*100,100);
     displayEl.textContent = fmtAbs(mines);
     labelEl.innerHTML = '<i data-lucide="alert-triangle" style="width:14px;height:14px"></i> Total Mines Shift Ini';
     card.style.background = 'linear-gradient(145deg,#4a0010 0%,#c0132e 45%,#f43f5e 80%,#fda4af 100%)';
-    card.classList.remove('mines-lebih');
-    card.classList.add('mines-danger');
+    card.classList.remove('mines-lebih'); card.classList.add('mines-danger');
     barEl.style.background = 'linear-gradient(90deg,rgba(255,255,255,0.6),rgba(253,164,175,0.9))';
-    barEl.style.width = pct + '%';
-    ringEl.style.strokeDashoffset = circumference - (pct / 100) * circumference;
-    ringPctEl.textContent = pct.toFixed(0) + '%';
-    ringLabelEl.textContent = 'dari modal';
-    if (mines <= 500) statusEl.textContent = '⚠ Mines kecil — pastikan cocok saat kliring.';
-    else if (mines <= 2000) statusEl.textContent = '🔴 Mines lumayan — perlu perhatian!';
-    else statusEl.textContent = '🚨 Mines besar — segera cek!';
-
-  } else if (mines === 0) {
-    // Pas / aman — hijau
+    barEl.style.width = pct+'%';
+    ringEl.style.strokeDashoffset = circumference-(pct/100)*circumference;
+    document.getElementById('ring-pct').textContent = pct.toFixed(0)+'%';
+    document.getElementById('ring-label').textContent = 'dari modal';
+    statusEl.textContent = mines<=500?'⚠ Mines kecil.':mines<=2000?'🔴 Mines lumayan!':'🚨 Mines besar!';
+  } else if(mines === 0){
     displayEl.textContent = 'Rp 0';
     labelEl.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px"></i> Total Mines Shift Ini';
     card.style.background = 'linear-gradient(145deg,#013d29 0%,#057a55 45%,#10b981 80%,#6ee7b7 100%)';
     card.style.boxShadow = '0 8px 32px rgba(5,150,105,0.35)';
     card.classList.remove('mines-danger','mines-lebih');
-    barEl.style.width = '0%';
-    ringEl.style.strokeDashoffset = circumference;
-    ringPctEl.textContent = '0%';
-    ringLabelEl.textContent = 'dari modal';
+    barEl.style.width = '0%'; ringEl.style.strokeDashoffset = circumference;
+    document.getElementById('ring-pct').textContent = '0%';
+    document.getElementById('ring-label').textContent = 'dari modal';
     statusEl.textContent = '✅ Aman! Tidak ada mines.';
-
   } else {
-    // Mines negatif = LEBIH / surplus — biru, pulsing biru
     const surplus = Math.abs(mines);
-    const pct = Math.min(surplus / modal * 100, 100);
-    displayEl.textContent = '+' + fmtAbs(surplus) + ' (Lebih)';
+    const pct = Math.min(surplus/modal*100,100);
+    displayEl.textContent = '+'+fmtAbs(surplus)+' (Lebih)';
     labelEl.innerHTML = '<i data-lucide="trending-up" style="width:14px;height:14px"></i> Saldo Lebih Shift Ini';
     card.style.background = 'linear-gradient(145deg,#0c1f5e 0%,#1a56db 45%,#3b82f6 80%,#93c5fd 100%)';
     card.style.boxShadow = '';
-    card.classList.remove('mines-danger');
-    card.classList.add('mines-lebih');
+    card.classList.remove('mines-danger'); card.classList.add('mines-lebih');
     barEl.style.background = 'linear-gradient(90deg,rgba(255,255,255,0.5),rgba(147,197,253,0.9))';
-    barEl.style.width = pct + '%';
-    ringEl.style.strokeDashoffset = circumference - (pct / 100) * circumference;
-    ringPctEl.textContent = '+' + pct.toFixed(0) + '%';
-    ringLabelEl.textContent = 'surplus';
-    statusEl.textContent = '💙 Lebih ' + fmtAbs(surplus) + ' — setorkan ke SC!';
+    barEl.style.width = pct+'%';
+    ringEl.style.strokeDashoffset = circumference-(pct/100)*circumference;
+    document.getElementById('ring-pct').textContent = '+'+pct.toFixed(0)+'%';
+    document.getElementById('ring-label').textContent = 'surplus';
+    statusEl.textContent = '💙 Lebih '+fmtAbs(surplus)+' — setorkan ke SC!';
   }
 
   lucide.createIcons();
 
-  // Recent
-  const recent = [...data.transaksi].reverse().slice(0,5);
+  const recent = [...transaksi].reverse().slice(0,5);
   const rl = document.getElementById('recent-list');
   if(recent.length===0){
     rl.innerHTML='<div class="text-center text-blue-300 py-8 text-sm">Belum ada transaksi. <a href="#" onclick="navigate(\'catat\')" class="text-blue-500 underline">Catat sekarang</a></div>';
@@ -572,39 +625,13 @@ function renderDashboard(){
   }
 }
 
-function cekKliring(){
-  const modal = parseFloat(document.getElementById('modal-input').value)||200000;
-  const laci = parseFloat(document.getElementById('laci-input').value);
-  const setoran = parseFloat(document.getElementById('setoran-input').value)||0;
-  const res = document.getElementById('kliring-result');
-  if(!laci){ res.classList.add('hidden'); return; }
-  const sisaSetelahSetoran = laci;
-  const mines = modal - sisaSetelahSetoran;
-  res.classList.remove('hidden');
-  const icon=document.getElementById('kliring-icon');
-  const title=document.getElementById('kliring-title');
-  const detail=document.getElementById('kliring-detail');
-  if(mines===0){
-    res.style.background='#dcfce7'; icon.style.background='#bbf7d0'; icon.innerHTML='<span style="font-size:22px">✅</span>';
-    title.textContent='KLIRING AMAN!'; title.style.color='#16a34a';
-    detail.textContent='Uang di laci pas sesuai modal. Tidak ada mines!';
-  } else if(mines>0){
-    res.style.background='#fee2e2'; icon.style.background='#fecaca'; icon.innerHTML='<span style="font-size:22px">🔴</span>';
-    title.textContent='MINES: '+fmtAbs(mines); title.style.color='#dc2626';
-    detail.textContent='Kekurangan sebesar '+fmtAbs(mines)+'. Bayar sebelum pulang ya!';
-  } else {
-    res.style.background='#dbeafe'; icon.style.background='#bfdbfe'; icon.innerHTML='<span style="font-size:22px">💙</span>';
-    title.textContent='LEBIH: +'+fmtAbs(Math.abs(mines)); title.style.color='#1a56db';
-    detail.textContent='Ada kelebihan uang '+fmtAbs(Math.abs(mines))+'. Setorkan ke SC.';
-  }
-}
-
+// ═══ RENDER RIWAYAT ═══
 function renderRiwayat(){
-  const cari=(document.getElementById('r-cari')||{}).value?.toLowerCase()||'';
-  document.getElementById('riwayat-shift-title').textContent='Shift #'+data.shift;
-  document.getElementById('riwayat-date').textContent=data.tanggal||todayStr();
-  let list=[...data.transaksi].filter(t=>!cari||t.keterangan.toLowerCase().includes(cari)).reverse();
-  const tbody=document.getElementById('tbody-riwayat');
+  const cari = (document.getElementById('r-cari')||{}).value?.toLowerCase()||'';
+  document.getElementById('riwayat-shift-title').textContent = 'Shift #'+shiftNum;
+  document.getElementById('riwayat-date').textContent = todayStr();
+  let list = [...transaksi].filter(t=>!cari||t.keterangan.toLowerCase().includes(cari)).reverse();
+  const tbody = document.getElementById('tbody-riwayat');
   if(list.length===0){
     tbody.innerHTML='<tr><td colspan="5" class="text-center text-blue-300 py-10">Belum ada transaksi</td></tr>';
     document.getElementById('riwayat-summary').innerHTML=''; return;
@@ -615,44 +642,45 @@ function renderRiwayat(){
       <td><span class="${t.tipe==='tambah'?'badge-tambah':'badge-kurang'}">${t.tipe==='tambah'?'▲ Tambah':'▼ Kurang'}</span></td>
       <td class="text-blue-700">${t.keterangan||'-'}</td>
       <td class="text-right font-semibold ${t.tipe==='tambah'?'text-red-500':'text-emerald-600'}">${fmtAbs(t.jumlah)}</td>
-      <td><button class="btn-danger" onclick="hapus(${t.id})">Hapus</button></td>
+      <td><button class="btn-danger" onclick="hapus('${t.fbKey}')">Hapus</button></td>
     </tr>`).join('');
 
   const mines = getMines();
-  // Label mines di summary: negatif = lebih/surplus
-  let minesLabel;
-  if (mines > 0) minesLabel = `<span class="text-red-500">Mines: <b>${fmtAbs(mines)}</b></span>`;
-  else if (mines === 0) minesLabel = `<span class="text-emerald-600">Mines: <b>Rp 0 (Aman)</b></span>`;
-  else minesLabel = `<span class="text-blue-600">Lebih/Surplus: <b>+${fmtAbs(mines)}</b></span>`;
+  let minesLabel = mines>0
+    ? `<span class="text-red-500">Mines: <b>${fmtAbs(mines)}</b></span>`
+    : mines===0
+      ? `<span class="text-emerald-600">Mines: <b>Rp 0 (Aman)</b></span>`
+      : `<span class="text-blue-600">Lebih/Surplus: <b>+${fmtAbs(mines)}</b></span>`;
 
+  const tTotal = transaksi.filter(t=>t.tipe==='tambah').reduce((a,t)=>a+t.jumlah,0);
+  const kTotal = transaksi.filter(t=>t.tipe==='kurang').reduce((a,t)=>a+t.jumlah,0);
   document.getElementById('riwayat-summary').innerHTML=`
-    <span>Total: <b>${data.transaksi.length}</b> transaksi</span>
-    <span class="text-red-500">Tambah: <b>${fmtAbs(data.transaksi.filter(t=>t.tipe==='tambah').reduce((a,t)=>a+t.jumlah,0))}</b></span>
-    <span class="text-emerald-600">Kurang: <b>${fmtAbs(data.transaksi.filter(t=>t.tipe==='kurang').reduce((a,t)=>a+t.jumlah,0))}</b></span>
+    <span>Total: <b>${transaksi.length}</b> transaksi</span>
+    <span class="text-red-500">Tambah: <b>${fmtAbs(tTotal)}</b></span>
+    <span class="text-emerald-600">Kurang: <b>${fmtAbs(kTotal)}</b></span>
     ${minesLabel}`;
 }
 
-function renderHistory(){
-  const grid=document.getElementById('history-grid');
-  if(history.length===0){
-    grid.innerHTML='<div class="glass p-8 text-center text-blue-300">Belum ada shift yang tersimpan. Tekan "Mulai Shift Baru" untuk menyimpan shift aktif.</div>';
-    return;
+// ═══ RENDER HISTORI SHIFT ═══
+async function renderHistory(){
+  const grid = document.getElementById('history-grid');
+  grid.innerHTML = '<div class="glass p-8 text-center text-blue-300">Memuat histori...</div>';
+  if(!window._fbReady){ grid.innerHTML='<div class="glass p-8 text-center text-blue-300">Firebase belum terhubung.</div>'; return; }
+  const { db, ref, get } = window._fb;
+  const snap = await get(ref(db, `minescek/${kasirId}/histori`));
+  const raw  = snap.val() || {};
+  const shifts = Object.values(raw).sort((a,b)=>b.shift-a.shift);
+  if(shifts.length===0){
+    grid.innerHTML='<div class="glass p-8 text-center text-blue-300">Belum ada histori shift. Tekan "Mulai Shift Baru" untuk menyimpan.</div>'; return;
   }
-  grid.innerHTML=[...history].reverse().map((s)=>{
-    const mines=s.transaksi.reduce((a,t)=>t.tipe==='tambah'?a+t.jumlah:a-t.jumlah,0);
-    const aman=mines===0;
-    const lebih=mines<0;
-    let cardBg, minesText, minesLabel;
-    if(aman){
-      cardBg='linear-gradient(135deg,#059669,#10b981)';
-      minesText=fmtAbs(mines); minesLabel='AMAN';
-    } else if(lebih){
-      cardBg='linear-gradient(135deg,#1a56db,#3b82f6)';
-      minesText='+'+fmtAbs(mines); minesLabel='LEBIH';
-    } else {
-      cardBg='linear-gradient(135deg,#dc2626,#ef4444)';
-      minesText=fmtAbs(mines); minesLabel='MINES';
-    }
+  grid.innerHTML = shifts.map(s=>{
+    const trxArr = s.transaksi ? Object.values(s.transaksi) : [];
+    const mines  = trxArr.reduce((a,t)=>t.tipe==='tambah'?a+t.jumlah:a-t.jumlah,0);
+    const aman   = mines===0; const lebih = mines<0;
+    const cardBg = aman?'linear-gradient(135deg,#059669,#10b981)':lebih?'linear-gradient(135deg,#1a56db,#3b82f6)':'linear-gradient(135deg,#dc2626,#ef4444)';
+    const minesText = aman?fmtAbs(mines):lebih?'+'+fmtAbs(mines):fmtAbs(mines);
+    const minesLabel = aman?'AMAN':lebih?'LEBIH':'MINES';
+    const colorClass = aman?'text-emerald-600':lebih?'text-blue-600':'text-red-500';
     return `<div class="glass p-5">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-3">
@@ -663,35 +691,58 @@ function renderHistory(){
           </div>
         </div>
         <div class="text-right">
-          <div class="font-display text-lg ${aman?'text-emerald-600':lebih?'text-blue-600':'text-red-500'}">${minesText}</div>
-          <div class="text-xs ${aman?'text-emerald-400':lebih?'text-blue-400':'text-red-400'}">${minesLabel}</div>
+          <div class="font-display text-lg ${colorClass}">${minesText}</div>
+          <div class="text-xs ${colorClass}">${minesLabel}</div>
         </div>
       </div>
-      <div class="text-xs text-blue-400">${s.transaksi.length} transaksi · Modal Rp ${Number(s.modal).toLocaleString('id-ID')}</div>
+      <div class="text-xs text-blue-400">${trxArr.length} transaksi · Modal Rp ${Number(s.modal).toLocaleString('id-ID')}</div>
     </div>`;
   }).join('');
 }
 
-function mulaiShiftBaru(){
-  if(!confirm('Simpan shift ini dan mulai shift baru?')) return;
-  history.push({...JSON.parse(JSON.stringify(data)), tanggal:data.tanggal||todayStr()});
-  saveHistory();
-  data={shift:data.shift+1, tanggal:todayStr(), modal:data.modal, transaksi:[]};
-  save();
-  renderDashboard();
-  toast('✅ Shift #'+data.shift+' dimulai!');
+// ═══ STATUS FIREBASE ═══
+function setFbStatus(state){
+  const el = document.getElementById('fb-status');
+  const lbl = document.getElementById('fb-label');
+  el.className = state;
+  if(state==='online'){ lbl.textContent='Firebase: Online'; }
+  else if(state==='offline'){ lbl.textContent='Firebase: Offline'; }
+  else { lbl.textContent='Menghubungkan...'; }
 }
 
+// ═══ SETUP MODAL ═══
+function showSetup(){ document.getElementById('setup-modal').classList.add('show'); }
+function closeModal(){ document.getElementById('setup-modal').classList.remove('show'); }
+
+// ═══ INIT ═══
 document.addEventListener('DOMContentLoaded',()=>{
   lucide.createIcons();
-  load();
-  if(!data.tanggal) data.tanggal=todayStr();
-  document.getElementById('page-date').textContent=todayFmt();
-  document.getElementById('greeting-date').textContent=now().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('c-waktu').value=timeNow();
-  document.getElementById('c-jumlah').addEventListener('input',updatePreview);
-  renderDashboard();
+  document.getElementById('page-date').textContent = todayFmt();
+  document.getElementById('greeting-date').textContent = nowDate().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('c-waktu').value = timeNow();
+  document.getElementById('c-jumlah').addEventListener('input', updatePreview);
+  document.getElementById('kasir-id').value = kasirId;
+  updatePathDisplay();
   updatePreview();
+
+  if(window._fbReady){
+    subscribeShift();
+  } else {
+    document.addEventListener('fb-ready', ()=>{ subscribeShift(); });
+    // Cek apakah config masih default
+    setTimeout(()=>{
+      if(!window._fbReady) setFbStatus('offline');
+    }, 3000);
+  }
+
+  // Deteksi jika config masih GANTI_...
+  setTimeout(()=>{
+    if(document.getElementById('fb-status').classList.contains('connecting')){
+      setFbStatus('offline');
+      // Tampilkan setup modal otomatis jika belum pernah setup
+      if(!localStorage.getItem('fb_setup_seen')){ showSetup(); localStorage.setItem('fb_setup_seen','1'); }
+    }
+  }, 4000);
 });
 </script>
 </body>
