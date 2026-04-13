@@ -10,41 +10,23 @@
 
   <!-- ═══ FIREBASE SDK ═══ -->
   <script type="module">
-    /**
-     * ╔══════════════════════════════════════════════════════════╗
-     * ║         LANGKAH SETUP FIREBASE (baca dulu!)             ║
-     * ╠══════════════════════════════════════════════════════════╣
-     * ║  1. Buka https://console.firebase.google.com            ║
-     * ║  2. Klik "Add project" → beri nama → Create             ║
-     * ║  3. Di dashboard, klik ikon </> (Web)                   ║
-     * ║  4. Daftarkan app → copy firebaseConfig di bawah        ║
-     * ║  5. Di sidebar kiri: Build → Realtime Database          ║
-     * ║  6. Create database → pilih region → Start in test mode ║
-     * ║  7. Paste config kamu ke bagian firebaseConfig bawah    ║
-     * ╚══════════════════════════════════════════════════════════╝
-     */
-
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, get }
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // ═══ GANTI DENGAN CONFIG FIREBASE KAMU ═══
     const firebaseConfig = {
-  apiKey: "AIzaSyAw_qylbPprNGjDdpdIh9Z2jugufVI1QO8",
-  authDomain: "clerek-3b53c.firebaseapp.com",
-  databaseURL: "https://clerek-3b53c-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "clerek-3b53c",
-  storageBucket: "clerek-3b53c.firebasestorage.app",
-  messagingSenderId: "500359773432",
-  appId: "1:500359773432:web:27d2ef6b002c9977bb8f0d",
-  measurementId: "G-KMXE23DCT4"
-};
-    // ══════════════════════════════════════════
+      apiKey: "AIzaSyAw_qylbPprNGjDdpdIh9Z2jugufVI1QO8",
+      authDomain: "clerek-3b53c.firebaseapp.com",
+      databaseURL: "https://clerek-3b53c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "clerek-3b53c",
+      storageBucket: "clerek-3b53c.firebasestorage.app",
+      messagingSenderId: "500359773432",
+      appId: "1:500359773432:web:27d2ef6b002c9977bb8f0d",
+      measurementId: "G-KMXE23DCT4"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
-
-    // Expose ke window supaya bisa dipakai dari script biasa
     window._fb = { db, ref, set, push, onValue, remove, get };
     window._fbReady = true;
     document.dispatchEvent(new Event('fb-ready'));
@@ -63,12 +45,15 @@
     .nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;border-radius:12px;color:rgba(255,255,255,0.72);cursor:pointer;font-size:14px;font-weight:500;transition:all .22s ease;}
     .nav-item:hover{background:rgba(255,255,255,0.12);color:#fff;}
     .nav-item.active{background:rgba(255,255,255,0.18);color:#fff;font-weight:600;}
+    .nav-section{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);padding:12px 20px 6px;}
     .glass{background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(12px);border-radius:20px;box-shadow:var(--shadow-blue);}
     .stat-card{border-radius:20px;overflow:hidden;position:relative;}
     .stat-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.12);}
     .inp{width:100%;border-radius:12px;border:1.5px solid #bfdbfe;padding:10px 14px;background:#f0f7ff;font-size:14px;color:#1e3a5f;outline:none;transition:border .2s;font-family:'DM Sans',sans-serif;}
     .inp:focus{border-color:#1a56db;background:#fff;box-shadow:0 0 0 3px rgba(26,86,219,0.1);}
     label.lbl{font-size:13px;font-weight:600;color:#1e3a5f;margin-bottom:4px;display:block;}
+    .btn-primary{background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;box-shadow:0 4px 14px rgba(26,86,219,0.3);font-family:'DM Sans',sans-serif;}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,86,219,0.4);}
     .btn-tambah{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;box-shadow:0 4px 14px rgba(220,38,38,0.3);font-family:'DM Sans',sans-serif;flex:1;}
     .btn-tambah:hover{transform:translateY(-2px);}
     .btn-kurang{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;box-shadow:0 4px 14px rgba(5,150,105,0.3);font-family:'DM Sans',sans-serif;flex:1;}
@@ -76,6 +61,8 @@
     .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
     .badge-tambah{background:#fee2e2;color:#dc2626;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600;}
     .badge-kurang{background:#dcfce7;color:#16a34a;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600;}
+    .badge-mines{background:#fff1f2;color:#be123c;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;border:1.5px solid #fecdd3;}
+    .badge-aman{background:#f0fdf4;color:#15803d;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;border:1.5px solid #bbf7d0;}
     .page{display:none;} .page.active{display:block;}
     ::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-thumb{background:#93c5fd;border-radius:8px;}
     table{width:100%;border-collapse:collapse;}
@@ -95,19 +82,34 @@
     .quick-btn{background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:600;color:#1a56db;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;}
     .quick-btn:hover{background:#dbeafe;}
     .progress-ring-circle{transition:stroke-dashoffset 0.6s ease;}
-
-    /* ── Status bar Firebase ── */
     #fb-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;transition:all .3s;}
     #fb-status.online{background:#dcfce7;color:#16a34a;}
     #fb-status.offline{background:#fee2e2;color:#dc2626;}
     #fb-status.connecting{background:#fef9c3;color:#854d0e;}
-
-    /* ── Setup modal ── */
     #setup-modal{display:none;position:fixed;inset:0;background:rgba(15,42,94,0.6);z-index:100;align-items:center;justify-content:center;}
     #setup-modal.show{display:flex;}
     .modal-box{background:#fff;border-radius:24px;padding:32px;max-width:500px;width:90%;box-shadow:0 24px 80px rgba(15,42,94,0.3);}
     .setup-step{background:#f0f7ff;border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:13px;color:#1e3a5f;border-left:4px solid #1a56db;}
     .setup-step b{display:block;font-size:11px;color:#6b9fd4;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+
+    /* ── Catatan Mines ── */
+    .catatan-card{border-radius:16px;padding:18px 20px;border:1.5px solid #fecdd3;background:linear-gradient(135deg,#fff1f2,#fff5f5);transition:all .2s;position:relative;overflow:hidden;}
+    .catatan-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(220,38,38,0.08),transparent);border-radius:50%;}
+    .catatan-card:hover{border-color:#fca5a5;box-shadow:0 4px 16px rgba(220,38,38,0.12);}
+    .catatan-card.aman{border-color:#bbf7d0;background:linear-gradient(135deg,#f0fdf4,#f7fffe);}
+    .catatan-card.aman::before{background:radial-gradient(circle,rgba(5,150,105,0.08),transparent);}
+    .catatan-card.aman:hover{border-color:#86efac;box-shadow:0 4px 16px rgba(5,150,105,0.12);}
+
+    /* ── Rekap Bulanan ── */
+    .bulan-card{border-radius:20px;overflow:hidden;background:var(--glass-bg);border:1px solid var(--glass-border);box-shadow:var(--shadow-blue);margin-bottom:16px;}
+    .bulan-header{padding:18px 22px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .2s;}
+    .bulan-header:hover{background:rgba(26,86,219,0.04);}
+    .bulan-body{display:none;border-top:1.5px solid #dbeafe;}
+    .bulan-body.open{display:block;}
+    .rekap-summary-bar{display:flex;gap:0;border-radius:12px;overflow:hidden;height:10px;margin-top:8px;}
+    .bar-mines{background:linear-gradient(90deg,#dc2626,#f87171);transition:width .6s ease;}
+    .bar-aman{background:linear-gradient(90deg,#059669,#34d399);transition:width .6s ease;}
+    .chart-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
   </style>
 </head>
 <body>
@@ -118,24 +120,15 @@
 <!-- ══ SETUP MODAL ══ -->
 <div id="setup-modal">
   <div class="modal-box">
-    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;color:#0f2a5e;margin-bottom:6px">
-      🔧 Setup Firebase Dulu
-    </div>
-    <p style="font-size:13px;color:#6b9fd4;margin-bottom:20px">
-      File ini belum terhubung ke Firebase. Ikuti langkah berikut:
-    </p>
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;color:#0f2a5e;margin-bottom:6px">🔧 Setup Firebase Dulu</div>
+    <p style="font-size:13px;color:#6b9fd4;margin-bottom:20px">File ini belum terhubung ke Firebase. Ikuti langkah berikut:</p>
     <div class="setup-step"><b>Langkah 1</b>Buka <a href="https://console.firebase.google.com" target="_blank" style="color:#1a56db">console.firebase.google.com</a> → buat project baru</div>
     <div class="setup-step"><b>Langkah 2</b>Klik ikon <code>&lt;/&gt;</code> (Web) → daftarkan app</div>
     <div class="setup-step"><b>Langkah 3</b>Buka <strong>Build → Realtime Database</strong> → Create database → pilih region → <em>Start in test mode</em></div>
-    <div class="setup-step"><b>Langkah 4</b>Copy <code>firebaseConfig</code> dari Project Settings → paste ke bagian atas file HTML ini (ganti teks <code>GANTI_...</code>)</div>
-    <div class="setup-step"><b>Langkah 5</b>Buka file lagi di browser — aplikasi langsung tersambung!</div>
+    <div class="setup-step"><b>Langkah 4</b>Copy <code>firebaseConfig</code> dari Project Settings → paste ke bagian atas file HTML ini</div>
     <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
-      <a href="https://console.firebase.google.com" target="_blank" style="background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff;border:none;border-radius:12px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;">
-        🚀 Buka Firebase Console
-      </a>
-      <button onclick="closeModal()" style="background:#f0f7ff;border:1.5px solid #bfdbfe;color:#1a56db;border-radius:12px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;">
-        Tutup
-      </button>
+      <a href="https://console.firebase.google.com" target="_blank" style="background:linear-gradient(135deg,#1a56db,#2563eb);color:#fff;border:none;border-radius:12px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;">🚀 Buka Firebase Console</a>
+      <button onclick="closeModal()" style="background:#f0f7ff;border:1.5px solid #bfdbfe;color:#1a56db;border-radius:12px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;">Tutup</button>
     </div>
   </div>
 </div>
@@ -144,7 +137,7 @@
 
   <!-- SIDEBAR -->
   <div id="sidebar" class="flex flex-col py-6 px-4 fixed top-0 left-0 bottom-0 z-50" style="width:260px">
-    <div class="mb-8 px-2">
+    <div class="mb-6 px-2">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -158,11 +151,15 @@
         </div>
       </div>
     </div>
-    <nav class="flex flex-col gap-1 flex-1">
+    <nav class="flex flex-col gap-1 flex-1 overflow-y-auto">
+      <div class="nav-section">Utama</div>
       <div class="nav-item active" onclick="navigate('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> Dashboard</div>
       <div class="nav-item" onclick="navigate('catat')"><i data-lucide="plus-circle" style="width:18px;height:18px"></i> Catat Transaksi</div>
       <div class="nav-item" onclick="navigate('riwayat')"><i data-lucide="list" style="width:18px;height:18px"></i> Riwayat Shift Ini</div>
       <div class="nav-item" onclick="navigate('history')"><i data-lucide="calendar-days" style="width:18px;height:18px"></i> Histori Shift</div>
+      <div class="nav-section">Mines</div>
+      <div class="nav-item" onclick="navigate('catatan')"><i data-lucide="notebook-pen" style="width:18px;height:18px"></i> Catatan Mines</div>
+      <div class="nav-item" onclick="navigate('rekap')"><i data-lucide="bar-chart-3" style="width:18px;height:18px"></i> Rekap Bulanan</div>
     </nav>
     <div class="mt-4 pt-4 border-t border-white/15">
       <button onclick="mulaiShiftBaru()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2)">
@@ -193,14 +190,11 @@
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <!-- Status Firebase -->
         <div id="fb-status" class="connecting">
           <span id="fb-dot">◉</span>
           <span id="fb-label">Menghubungkan...</span>
         </div>
-        <button onclick="showSetup()" title="Setup Firebase" style="background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:6px 10px;cursor:pointer;font-size:11px;font-weight:600;color:#1a56db;">
-          ⚙ Setup
-        </button>
+        <button onclick="showSetup()" title="Setup Firebase" style="background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:6px 10px;cursor:pointer;font-size:11px;font-weight:600;color:#1a56db;">⚙ Setup</button>
       </div>
     </div>
 
@@ -218,16 +212,12 @@
         </div>
         <div class="flex-1">
           <label class="lbl">Path Firebase aktif</label>
-          <div id="fb-path" style="font-size:12px;font-family:monospace;background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:8px 12px;color:#6b9fd4;">
-            minescek / kasir01 / shift_1
-          </div>
+          <div id="fb-path" style="font-size:12px;font-family:monospace;background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:8px 12px;color:#6b9fd4;">minescek / kasir01 / shift_1</div>
         </div>
       </div>
 
       <!-- ══ DASHBOARD ══ -->
       <div id="page-dashboard" class="page active fade-up">
-
-        <!-- Banner -->
         <div class="mb-7 rounded-3xl overflow-hidden relative" style="background:linear-gradient(120deg,#0c1f5e 0%,#1a4fd8 45%,#3b82f6 75%,#93c5fd 100%);padding:28px 32px;box-shadow:0 12px 48px rgba(26,86,219,0.28)">
           <div class="relative flex items-center justify-between flex-wrap gap-4">
             <div>
@@ -273,9 +263,7 @@
           <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#4a0010 0%,#c0132e 45%,#f43f5e 80%,#fda4af 100%);">
             <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);border-radius:20px;pointer-events:none"></div>
             <div class="relative">
-              <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(254,205,211,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px">
-                <i data-lucide="minus-circle" style="width:12px;height:12px"></i> Total Ditambah
-              </div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(254,205,211,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px"><i data-lucide="minus-circle" style="width:12px;height:12px"></i> Total Ditambah</div>
               <div class="font-display" style="font-size:22px" id="stat-tambah">Rp 0</div>
               <div style="font-size:11px;color:rgba(254,205,211,0.6)" id="stat-tambah-count">0 transaksi</div>
             </div>
@@ -283,9 +271,7 @@
           <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#013d29 0%,#057a55 45%,#10b981 80%,#6ee7b7 100%);">
             <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);border-radius:20px;pointer-events:none"></div>
             <div class="relative">
-              <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(167,243,208,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px">
-                <i data-lucide="plus-circle" style="width:12px;height:12px"></i> Total Dikurangi
-              </div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(167,243,208,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px"><i data-lucide="plus-circle" style="width:12px;height:12px"></i> Total Dikurangi</div>
               <div class="font-display" style="font-size:22px" id="stat-kurang">Rp 0</div>
               <div style="font-size:11px;color:rgba(167,243,208,0.6)" id="stat-kurang-count">0 transaksi</div>
             </div>
@@ -293,13 +279,23 @@
           <div class="stat-card p-5 text-white" style="background:linear-gradient(145deg,#1a0550 0%,#5b21b6 45%,#8b5cf6 80%,#c4b5fd 100%);">
             <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%);border-radius:20px;pointer-events:none"></div>
             <div class="relative">
-              <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(221,214,254,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px">
-                <i data-lucide="activity" style="width:12px;height:12px"></i> Transaksi Shift Ini
-              </div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(221,214,254,0.85);margin-bottom:8px;display:flex;align-items:center;gap:5px"><i data-lucide="activity" style="width:12px;height:12px"></i> Transaksi Shift Ini</div>
               <div class="font-display" style="font-size:22px" id="stat-total-trx">0</div>
               <div style="font-size:11px;color:rgba(221,214,254,0.6)" id="stat-shift-num">Shift #1</div>
             </div>
           </div>
+        </div>
+
+        <!-- Catatan Mines Terbaru di Dashboard -->
+        <div class="glass p-5 mb-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-display text-base text-blue-900">Catatan Mines Terbaru</h3>
+              <div class="text-xs text-blue-400">Mines yang sudah dicatat &amp; dikonfirmasi</div>
+            </div>
+            <button onclick="navigate('catatan')" class="text-xs text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</button>
+          </div>
+          <div id="dashboard-catatan-list"><div class="text-center text-blue-300 py-6 text-sm">Memuat data...</div></div>
         </div>
 
         <!-- Transaksi Terbaru -->
@@ -382,6 +378,141 @@
         </div>
       </div>
 
+      <!-- ══ CATATAN MINES ══ -->
+      <div id="page-catatan" class="page fade-up">
+        <!-- Form Catat Mines -->
+        <div class="glass p-6 mb-6">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#dc2626,#ef4444)">
+              <i data-lucide="notebook-pen" style="width:18px;height:18px;color:white"></i>
+            </div>
+            <div>
+              <h2 class="font-display text-lg text-blue-900">Catat Mines Shift</h2>
+              <p class="text-xs text-blue-400">Rekap mines per shift — simpan ke Firebase otomatis</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="lbl">Nominal Mines (Rp)</label>
+              <input type="number" id="cm-nominal" class="inp" placeholder="Contoh: 1500" min="0" oninput="updateCatatanPreview()" />
+            </div>
+            <div>
+              <label class="lbl">Tanggal Kejadian</label>
+              <input type="date" id="cm-tanggal" class="inp" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="lbl">Alasan / Keterangan Mines</label>
+              <input type="text" id="cm-alasan" class="inp" placeholder="Contoh: salah kembalian customer struk 0038, kurang Rp1.500" />
+            </div>
+            <div>
+              <label class="lbl">Shift ke-</label>
+              <input type="number" id="cm-shift" class="inp" placeholder="Contoh: 3" min="1" />
+            </div>
+            <div>
+              <label class="lbl">Status Mines</label>
+              <select id="cm-status" class="inp" style="cursor:pointer">
+                <option value="belum_lunas">⚠ Belum Lunas</option>
+                <option value="lunas">✅ Sudah Dibayar / Lunas</option>
+                <option value="dihapus">🗑 Dihapuskan / Tidak Dihitung</option>
+              </select>
+            </div>
+          </div>
+          <!-- Preview -->
+          <div id="catatan-preview" class="mb-4 p-4 rounded-2xl" style="background:#fff1f2;border:1.5px solid #fecdd3;display:none">
+            <div class="text-xs text-red-400 font-semibold uppercase tracking-wider mb-1">Preview Catatan:</div>
+            <div class="font-display text-xl text-red-600" id="catatan-preview-nominal">Rp 0</div>
+            <div class="text-sm text-red-400 mt-1" id="catatan-preview-alasan">-</div>
+          </div>
+          <button class="btn-primary w-full" onclick="simpanCatatan()">
+            <i data-lucide="save" style="width:15px;height:15px;display:inline;margin-right:6px;vertical-align:middle"></i>
+            Simpan Catatan Mines ke Firebase
+          </button>
+        </div>
+
+        <!-- Filter & List -->
+        <div class="glass p-4 mb-5 flex flex-wrap gap-3 items-center justify-between">
+          <div class="flex gap-2 flex-wrap">
+            <button class="quick-btn" style="font-size:12px" onclick="filterCatatan('semua')" id="fc-semua">Semua</button>
+            <button class="quick-btn" style="font-size:12px" onclick="filterCatatan('belum_lunas')" id="fc-belum_lunas">⚠ Belum Lunas</button>
+            <button class="quick-btn" style="font-size:12px" onclick="filterCatatan('lunas')" id="fc-lunas">✅ Lunas</button>
+            <button class="quick-btn" style="font-size:12px" onclick="filterCatatan('dihapus')" id="fc-dihapus">🗑 Dihapuskan</button>
+          </div>
+          <input type="text" id="cm-cari" class="inp" placeholder="Cari catatan..." style="width:180px" oninput="renderCatatan()" />
+        </div>
+
+        <!-- Summary Catatan -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5" id="catatan-stats-row">
+          <div class="glass p-4">
+            <div class="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-1">Total Mines Tercatat</div>
+            <div class="font-display text-xl text-red-500" id="cs-total">Rp 0</div>
+            <div class="text-xs text-blue-400" id="cs-count">0 catatan</div>
+          </div>
+          <div class="glass p-4">
+            <div class="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-1">Belum Lunas</div>
+            <div class="font-display text-xl text-orange-500" id="cs-belum">Rp 0</div>
+            <div class="text-xs text-blue-400" id="cs-belum-count">0 catatan</div>
+          </div>
+          <div class="glass p-4">
+            <div class="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-1">Sudah Lunas</div>
+            <div class="font-display text-xl text-emerald-500" id="cs-lunas">Rp 0</div>
+            <div class="text-xs text-blue-400" id="cs-lunas-count">0 catatan</div>
+          </div>
+        </div>
+
+        <!-- List Catatan -->
+        <div id="catatan-list">
+          <div class="glass p-8 text-center text-blue-300">Memuat catatan...</div>
+        </div>
+      </div>
+
+      <!-- ══ REKAP BULANAN ══ -->
+      <div id="page-rekap" class="page fade-up">
+        <!-- Header Rekap -->
+        <div class="mb-6 rounded-3xl overflow-hidden" style="background:linear-gradient(120deg,#1a0550 0%,#5b21b6 50%,#8b5cf6 100%);padding:28px 32px;box-shadow:0 12px 48px rgba(91,33,182,0.28)">
+          <div style="font-size:11px;color:rgba(221,214,254,0.85);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">📊 Rekap Bulanan</div>
+          <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(18px,3vw,26px);color:#ffffff;margin-bottom:6px">Total Mines per Bulan</div>
+          <div style="font-size:13px;color:rgba(221,214,254,0.75)">Berdasarkan data Catatan Mines yang tersimpan di Firebase</div>
+          <div class="flex gap-4 mt-5 flex-wrap">
+            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:12px 18px;text-align:center;min-width:100px">
+              <div style="font-size:10px;color:rgba(221,214,254,0.7);text-transform:uppercase;letter-spacing:.07em">Total Mines</div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#fff;font-size:18px" id="rekap-grand-total">Rp 0</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:12px 18px;text-align:center;min-width:100px">
+              <div style="font-size:10px;color:rgba(221,214,254,0.7);text-transform:uppercase;letter-spacing:.07em">Belum Lunas</div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#fca5a5;font-size:18px" id="rekap-grand-belum">Rp 0</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:12px 18px;text-align:center;min-width:100px">
+              <div style="font-size:10px;color:rgba(221,214,254,0.7);text-transform:uppercase;letter-spacing:.07em">Total Catatan</div>
+              <div style="font-family:'Poppins',sans-serif;font-weight:700;color:#fff;font-size:18px" id="rekap-grand-count">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Tahun -->
+        <div class="glass p-4 mb-5 flex flex-wrap gap-3 items-center">
+          <label class="lbl" style="margin:0">Filter Tahun:</label>
+          <select id="rekap-tahun" class="inp" style="width:140px;cursor:pointer" onchange="renderRekap()"></select>
+          <div class="flex-1"></div>
+          <div class="text-xs text-blue-400" id="rekap-filter-info"></div>
+        </div>
+
+        <!-- Chart Bar Visual -->
+        <div class="glass p-5 mb-5">
+          <h3 class="font-display text-sm text-blue-900 mb-4">Grafik Mines per Bulan</h3>
+          <div id="rekap-chart" class="flex items-end gap-2" style="height:120px;align-items:flex-end"></div>
+          <div class="flex gap-4 mt-3 text-xs text-blue-400">
+            <span><span class="chart-dot" style="background:#dc2626"></span> Mines Belum Lunas</span>
+            <span><span class="chart-dot" style="background:#10b981"></span> Mines Lunas</span>
+            <span><span class="chart-dot" style="background:#6b7280"></span> Dihapuskan</span>
+          </div>
+        </div>
+
+        <!-- Accordion per Bulan -->
+        <div id="rekap-accordion">
+          <div class="glass p-8 text-center text-blue-300">Memuat rekap...</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -391,32 +522,38 @@
 let kasirId   = 'kasir01';
 let shiftNum  = 1;
 let modal     = 200000;
-let transaksi = [];   // cache lokal dari Firebase listener
-let histShifts = [];  // cache histori shift
+let transaksi = [];
+let catatanMines = [];    // ← BARU: cache catatan mines
+let filterCatatanAktif = 'semua';
 
 // ═══ HELPERS ═══
 const fmtAbs  = n => 'Rp ' + Number(Math.abs(n||0)).toLocaleString('id-ID');
+const fmtNum  = n => Number(n||0).toLocaleString('id-ID');
 const nowDate = () => new Date();
-const todayFmt = () => nowDate().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-const todayStr = () => nowDate().toISOString().split('T')[0];
-const timeNow  = () => nowDate().toTimeString().slice(0,5);
+const todayFmt= () => nowDate().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const todayStr= () => nowDate().toISOString().split('T')[0];
+const timeNow = () => nowDate().toTimeString().slice(0,5);
+
+const BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 function fbPath(sub='') {
   const base = `minescek/${kasirId}/shift_${shiftNum}`;
   return sub ? `${base}/${sub}` : base;
 }
-
+function fbCatatanPath(sub='') {
+  const base = `minescek/${kasirId}/catatan_mines`;
+  return sub ? `${base}/${sub}` : base;
+}
 function updatePathDisplay(){
   document.getElementById('fb-path').textContent = `minescek / ${kasirId} / shift_${shiftNum}`;
 }
-
 function toast(msg){
   const t=document.getElementById('toast'); t.textContent=msg;
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 // ═══ NAVIGASI ═══
-const pageMap={dashboard:'Dashboard',catat:'Catat Transaksi',riwayat:'Riwayat Shift Ini',history:'Histori Shift'};
+const pageMap={dashboard:'Dashboard',catat:'Catat Transaksi',riwayat:'Riwayat Shift Ini',history:'Histori Shift',catatan:'Catatan Mines',rekap:'Rekap Bulanan'};
 function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -426,6 +563,8 @@ function navigate(page){
   closeSidebar();
   if(page==='riwayat') renderRiwayat();
   if(page==='history') renderHistory();
+  if(page==='catatan') renderCatatan();
+  if(page==='rekap')   renderRekap();
 }
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
@@ -433,7 +572,7 @@ function closeSidebar(){ document.getElementById('sidebar').classList.remove('op
 // ═══ GANTI KASIR / SHIFT ═══
 function gantKasir(){
   const val = document.getElementById('kasir-id').value.trim();
-  if(val) { kasirId = val; subscribeShift(); }
+  if(val) { kasirId = val; subscribeShift(); subscribeCatatan(); }
   updatePathDisplay();
 }
 function gantShift(){
@@ -443,19 +582,15 @@ function gantShift(){
   updatePathDisplay();
 }
 
-// ═══ FIREBASE: SUBSCRIBE REALTIME ═══
+// ═══ FIREBASE: SUBSCRIBE SHIFT ═══
 let _unsubscribe = null;
 function subscribeShift(){
   if(!window._fbReady){ return; }
   const { db, ref, onValue } = window._fb;
-
-  // Batal listener lama
   if(_unsubscribe) _unsubscribe();
-
   const trxRef = ref(db, fbPath('transaksi'));
   _unsubscribe = onValue(trxRef, (snap) => {
     const raw = snap.val() || {};
-    // Ubah objek Firebase jadi array, urut waktu
     transaksi = Object.entries(raw).map(([fbKey, v]) => ({...v, fbKey}))
       .sort((a,b) => a.id - b.id);
     renderDashboard();
@@ -464,29 +599,90 @@ function subscribeShift(){
     setFbStatus('offline');
     console.error('Firebase error:', err);
   });
-
-  // Baca modal
   const modalRef = ref(db, fbPath('modal'));
   onValue(modalRef, (snap) => {
     if(snap.val()) modal = snap.val();
     document.getElementById('modal-display').textContent = fmtAbs(modal);
   });
-
   setFbStatus('online');
 }
 
-// ═══ FIREBASE: TULIS TRANSAKSI ═══
+// ═══ FIREBASE: SUBSCRIBE CATATAN MINES ═══
+let _unsubCatatan = null;
+function subscribeCatatan(){
+  if(!window._fbReady){ return; }
+  const { db, ref, onValue } = window._fb;
+  if(_unsubCatatan) _unsubCatatan();
+  const cRef = ref(db, fbCatatanPath());
+  _unsubCatatan = onValue(cRef, (snap) => {
+    const raw = snap.val() || {};
+    catatanMines = Object.entries(raw).map(([fbKey, v]) => ({...v, fbKey}))
+      .sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+    renderDashboardCatatan();
+    renderCatatan();
+    renderRekap();
+  }, (err) => { console.error('Catatan mines error:', err); });
+}
+
+// ═══ FIREBASE: SIMPAN CATATAN MINES ═══
+async function simpanCatatan(){
+  if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); showSetup(); return; }
+  const nominal = parseFloat(document.getElementById('cm-nominal').value);
+  if(!nominal || nominal <= 0){ toast('⚠ Masukkan nominal mines!'); return; }
+  const alasan  = document.getElementById('cm-alasan').value.trim();
+  if(!alasan){ toast('⚠ Masukkan alasan / keterangan mines!'); return; }
+  const tanggal = document.getElementById('cm-tanggal').value;
+  if(!tanggal){ toast('⚠ Pilih tanggal kejadian!'); return; }
+  const shiftCm  = parseInt(document.getElementById('cm-shift').value) || shiftNum;
+  const status   = document.getElementById('cm-status').value;
+
+  const { db, ref, push, set } = window._fb;
+  const newRef = push(ref(db, fbCatatanPath()));
+  await set(newRef, {
+    timestamp: Date.now(),
+    nominal, alasan,
+    tanggal,           // format: YYYY-MM-DD
+    shift: shiftCm,
+    status             // belum_lunas | lunas | dihapus
+  });
+
+  // Reset form
+  document.getElementById('cm-nominal').value = '';
+  document.getElementById('cm-alasan').value = '';
+  document.getElementById('cm-shift').value = '';
+  document.getElementById('cm-status').value = 'belum_lunas';
+  document.getElementById('catatan-preview').style.display = 'none';
+
+  toast('✅ Catatan mines disimpan!');
+}
+
+// ═══ FIREBASE: HAPUS CATATAN ═══
+async function hapusCatatan(fbKey){
+  if(!confirm('Hapus catatan mines ini?')) return;
+  if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); return; }
+  const { db, ref, remove } = window._fb;
+  await remove(ref(db, fbCatatanPath(fbKey)));
+  toast('✓ Catatan dihapus');
+}
+
+// ═══ FIREBASE: UPDATE STATUS CATATAN ═══
+async function ubahStatusCatatan(fbKey, statusBaru){
+  if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); return; }
+  const { db, ref, set } = window._fb;
+  await set(ref(db, fbCatatanPath(fbKey+'/status')), statusBaru);
+  toast('✓ Status diperbarui');
+}
+
+// ═══ FIREBASE: CATAT TRANSAKSI SHIFT ═══
 async function catat(tipe){
   if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); showSetup(); return; }
   const jml = parseFloat(document.getElementById('c-jumlah').value);
   if(!jml||jml<=0){ toast('⚠ Masukkan jumlah yang valid!'); return; }
   const ket = document.getElementById('c-ket').value.trim();
   const wkt = document.getElementById('c-waktu').value || timeNow();
-
   const { db, ref, push, set } = window._fb;
   const newRef = push(ref(db, fbPath('transaksi')));
   await set(newRef, { id: Date.now(), tipe, jumlah: jml, keterangan: ket||'-', waktu: wkt });
-
   document.getElementById('c-jumlah').value = '';
   document.getElementById('c-ket').value = '';
   document.getElementById('c-waktu').value = timeNow();
@@ -508,15 +704,11 @@ async function mulaiShiftBaru(){
   if(!confirm('Simpan shift ini ke histori dan mulai shift baru?')) return;
   if(!window._fbReady){ toast('⚠ Firebase belum terhubung!'); showSetup(); return; }
   const { db, ref, set } = window._fb;
-
-  // Simpan shift ini ke histori
   const histRef = ref(db, `minescek/${kasirId}/histori/shift_${shiftNum}`);
   await set(histRef, {
     shift: shiftNum, tanggal: todayStr(), modal,
     transaksi: transaksi.reduce((acc, t) => { acc[t.fbKey] = {id:t.id,tipe:t.tipe,jumlah:t.jumlah,keterangan:t.keterangan,waktu:t.waktu}; return acc; }, {})
   });
-
-  // Mulai shift baru
   shiftNum++;
   document.getElementById('shift-input').value = shiftNum;
   const newShiftRef = ref(db, fbPath('transaksi'));
@@ -530,7 +722,6 @@ async function mulaiShiftBaru(){
 function getMines(){
   return transaksi.reduce((a,t)=> t.tipe==='tambah' ? a+t.jumlah : a-t.jumlah, 0);
 }
-
 function setQuick(n){ document.getElementById('c-jumlah').value=n; updatePreview(); }
 function updatePreview(){
   const jml = parseFloat(document.getElementById('c-jumlah').value)||0;
@@ -539,6 +730,18 @@ function updatePreview(){
   const afk  = cur - jml;
   const lbl  = v => v>0 ? fmtAbs(v)+' mines' : v===0 ? 'Rp 0 (Aman)' : '+'+fmtAbs(v)+' (Lebih)';
   document.getElementById('preview-mines').textContent = '▲ '+lbl(aft)+'  /  ▼ '+lbl(afk);
+}
+function updateCatatanPreview(){
+  const nominal = parseFloat(document.getElementById('cm-nominal').value)||0;
+  const alasan  = document.getElementById('cm-alasan').value;
+  const prev = document.getElementById('catatan-preview');
+  if(nominal > 0){
+    prev.style.display = 'block';
+    document.getElementById('catatan-preview-nominal').textContent = fmtAbs(nominal);
+    document.getElementById('catatan-preview-alasan').textContent = alasan || '(belum diisi alasan)';
+  } else {
+    prev.style.display = 'none';
+  }
 }
 
 // ═══ RENDER DASHBOARD ═══
@@ -626,6 +829,32 @@ function renderDashboard(){
   }
 }
 
+// ═══ RENDER DASHBOARD CATATAN ═══
+function renderDashboardCatatan(){
+  const el = document.getElementById('dashboard-catatan-list');
+  const recent = catatanMines.slice(0,4);
+  if(recent.length===0){
+    el.innerHTML='<div class="text-center text-blue-300 py-6 text-sm">Belum ada catatan. <a href="#" onclick="navigate(\'catatan\')" class="text-blue-500 underline">Catat sekarang</a></div>';
+    return;
+  }
+  el.innerHTML = recent.map(c => {
+    const statusMap = {belum_lunas:['⚠','bg-orange-100 text-orange-600','Belum Lunas'],lunas:['✅','bg-emerald-100 text-emerald-600','Lunas'],dihapus:['🗑','bg-gray-100 text-gray-500','Dihapuskan']};
+    const [ico, cls, lbl] = statusMap[c.status] || statusMap.belum_lunas;
+    const tgl = c.tanggal ? new Date(c.tanggal).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}) : '-';
+    return `<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-red-50/40 transition mb-1" style="border:1px solid #fecdd3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg" style="background:#fee2e2">${ico}</div>
+      <div class="flex-1 min-w-0">
+        <div class="font-medium text-sm text-blue-900 truncate">${c.alasan}</div>
+        <div class="text-xs text-blue-400">Shift #${c.shift} · ${tgl}</div>
+      </div>
+      <div class="text-right flex-shrink-0">
+        <div class="font-semibold text-sm text-red-500">${fmtAbs(c.nominal)}</div>
+        <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${cls}">${lbl}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // ═══ RENDER RIWAYAT ═══
 function renderRiwayat(){
   const cari = (document.getElementById('r-cari')||{}).value?.toLowerCase()||'';
@@ -645,14 +874,12 @@ function renderRiwayat(){
       <td class="text-right font-semibold ${t.tipe==='tambah'?'text-red-500':'text-emerald-600'}">${fmtAbs(t.jumlah)}</td>
       <td><button class="btn-danger" onclick="hapus('${t.fbKey}')">Hapus</button></td>
     </tr>`).join('');
-
   const mines = getMines();
   let minesLabel = mines>0
     ? `<span class="text-red-500">Mines: <b>${fmtAbs(mines)}</b></span>`
     : mines===0
       ? `<span class="text-emerald-600">Mines: <b>Rp 0 (Aman)</b></span>`
       : `<span class="text-blue-600">Lebih/Surplus: <b>+${fmtAbs(mines)}</b></span>`;
-
   const tTotal = transaksi.filter(t=>t.tipe==='tambah').reduce((a,t)=>a+t.jumlah,0);
   const kTotal = transaksi.filter(t=>t.tipe==='kurang').reduce((a,t)=>a+t.jumlah,0);
   document.getElementById('riwayat-summary').innerHTML=`
@@ -701,14 +928,235 @@ async function renderHistory(){
   }).join('');
 }
 
+// ═══ FILTER CATATAN ═══
+function filterCatatan(val){
+  filterCatatanAktif = val;
+  document.querySelectorAll('[id^="fc-"]').forEach(b=>{
+    b.style.background = '#f0f7ff'; b.style.color = '#1a56db'; b.style.borderColor = '#bfdbfe';
+  });
+  const aktif = document.getElementById('fc-'+val);
+  if(aktif){ aktif.style.background = '#1a56db'; aktif.style.color = '#fff'; aktif.style.borderColor = '#1a56db'; }
+  renderCatatan();
+}
+
+// ═══ RENDER CATATAN MINES ═══
+function renderCatatan(){
+  const cari = (document.getElementById('cm-cari')||{}).value?.toLowerCase()||'';
+  let list = [...catatanMines];
+  if(filterCatatanAktif !== 'semua') list = list.filter(c=>c.status===filterCatatanAktif);
+  if(cari) list = list.filter(c=>c.alasan?.toLowerCase().includes(cari)||String(c.nominal).includes(cari));
+
+  // Stats
+  const semua   = catatanMines.filter(c=>c.status!=='dihapus');
+  const belumArr= catatanMines.filter(c=>c.status==='belum_lunas');
+  const lunasArr= catatanMines.filter(c=>c.status==='lunas');
+  const totalNom= semua.reduce((a,c)=>a+c.nominal,0);
+  const belumNom= belumArr.reduce((a,c)=>a+c.nominal,0);
+  const lunasNom= lunasArr.reduce((a,c)=>a+c.nominal,0);
+  document.getElementById('cs-total').textContent = fmtAbs(totalNom);
+  document.getElementById('cs-count').textContent = semua.length+' catatan';
+  document.getElementById('cs-belum').textContent = fmtAbs(belumNom);
+  document.getElementById('cs-belum-count').textContent = belumArr.length+' catatan';
+  document.getElementById('cs-lunas').textContent = fmtAbs(lunasNom);
+  document.getElementById('cs-lunas-count').textContent = lunasArr.length+' catatan';
+
+  const el = document.getElementById('catatan-list');
+  if(list.length===0){
+    el.innerHTML='<div class="glass p-8 text-center text-blue-300">Belum ada catatan mines'+( filterCatatanAktif!=='semua'?' dengan filter ini':'')+'. '+
+      (filterCatatanAktif==='semua'?'Isi form di atas untuk menambah catatan.':'')+'</div>';
+    return;
+  }
+
+  const statusMap = {
+    belum_lunas:['⚠','Belum Lunas','text-orange-600','#fff7ed','#fed7aa'],
+    lunas:['✅','Sudah Lunas','text-emerald-600','#f0fdf4','#bbf7d0'],
+    dihapus:['🗑','Dihapuskan','text-gray-400','#f9fafb','#e5e7eb']
+  };
+
+  el.innerHTML = list.map(c=>{
+    const [ico, lbl, tc, bg, bc] = statusMap[c.status] || statusMap.belum_lunas;
+    const tgl = c.tanggal ? new Date(c.tanggal+'T00:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '-';
+    const tglShort = c.tanggal ? new Date(c.tanggal+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}) : '-';
+    return `<div class="catatan-card ${c.status==='lunas'?'aman':''} mb-3">
+      <div class="flex items-start justify-between gap-3 flex-wrap">
+        <div class="flex items-start gap-3 flex-1">
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl" style="background:${bg};border:1.5px solid ${bc}">${ico}</div>
+          <div class="flex-1 min-w-0">
+            <div class="font-semibold text-blue-900 text-sm mb-1">${c.alasan}</div>
+            <div class="flex flex-wrap gap-2 text-xs text-blue-400">
+              <span>📅 ${tgl}</span>
+              <span>🔁 Shift #${c.shift||'-'}</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-right flex-shrink-0">
+          <div class="font-display text-lg text-red-500 mb-1">${fmtAbs(c.nominal)}</div>
+          <span class="text-xs font-semibold px-2 py-1 rounded-full ${tc}" style="background:${bg};border:1.5px solid ${bc}">${lbl}</span>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-3 pt-3 border-t" style="border-color:rgba(220,38,38,0.1)">
+        ${c.status!=='lunas'?`<button onclick="ubahStatusCatatan('${c.fbKey}','lunas')" style="background:#f0fdf4;border:1.5px solid #bbf7d0;color:#15803d;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">✅ Tandai Lunas</button>`:''}
+        ${c.status!=='belum_lunas'?`<button onclick="ubahStatusCatatan('${c.fbKey}','belum_lunas')" style="background:#fff7ed;border:1.5px solid #fed7aa;color:#c2410c;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">⚠ Belum Lunas</button>`:''}
+        ${c.status!=='dihapus'?`<button onclick="ubahStatusCatatan('${c.fbKey}','dihapus')" style="background:#f9fafb;border:1.5px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">🗑 Hapuskan</button>`:''}
+        <button class="btn-danger" onclick="hapusCatatan('${c.fbKey}')" style="margin-left:auto">Hapus Permanen</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  lucide.createIcons();
+}
+
+// ═══ RENDER REKAP BULANAN ═══
+function renderRekap(){
+  // Isi dropdown tahun
+  const tahunEl = document.getElementById('rekap-tahun');
+  const tahunSet = new Set();
+  catatanMines.forEach(c=>{ if(c.tanggal) tahunSet.add(c.tanggal.slice(0,4)); });
+  const tahunArr = [...tahunSet].sort((a,b)=>b-a);
+  const tahunNow = String(nowDate().getFullYear());
+  if(!tahunSet.has(tahunNow)) tahunArr.unshift(tahunNow);
+  tahunEl.innerHTML = tahunArr.map(y=>`<option value="${y}" ${y===tahunEl.value||(!tahunEl.value&&y===tahunNow)?'selected':''}>${y}</option>`).join('');
+  const tahunPilih = tahunEl.value || tahunNow;
+
+  // Filter data
+  const dataFilter = catatanMines.filter(c=>c.tanggal && c.tanggal.startsWith(tahunPilih));
+  const totalAll   = dataFilter.filter(c=>c.status!=='dihapus').reduce((a,c)=>a+c.nominal,0);
+  const belumAll   = dataFilter.filter(c=>c.status==='belum_lunas').reduce((a,c)=>a+c.nominal,0);
+  document.getElementById('rekap-grand-total').textContent  = fmtAbs(totalAll);
+  document.getElementById('rekap-grand-belum').textContent  = fmtAbs(belumAll);
+  document.getElementById('rekap-grand-count').textContent  = dataFilter.length;
+  document.getElementById('rekap-filter-info').textContent  = `Menampilkan ${dataFilter.length} catatan tahun ${tahunPilih}`;
+
+  // Group per bulan
+  const perBulan = {};
+  for(let m=0; m<12; m++) perBulan[m] = [];
+  dataFilter.forEach(c=>{
+    const m = parseInt(c.tanggal.slice(5,7))-1;
+    perBulan[m].push(c);
+  });
+
+  // Chart
+  const maxNom = Math.max(...Object.values(perBulan).map(arr=>arr.filter(c=>c.status!=='dihapus').reduce((a,c)=>a+c.nominal,0)),1);
+  const chartEl = document.getElementById('rekap-chart');
+  chartEl.innerHTML = Object.keys(perBulan).map(m=>{
+    const arr   = perBulan[m];
+    const belum = arr.filter(c=>c.status==='belum_lunas').reduce((a,c)=>a+c.nominal,0);
+    const lunas = arr.filter(c=>c.status==='lunas').reduce((a,c)=>a+c.nominal,0);
+    const hapus = arr.filter(c=>c.status==='dihapus').reduce((a,c)=>a+c.nominal,0);
+    const total = belum + lunas + hapus;
+    const pct   = Math.round((total/maxNom)*100);
+    const pctB  = total>0?Math.round(belum/total*100):0;
+    const pctL  = total>0?Math.round(lunas/total*100):0;
+    const pctH  = total>0?(100-pctB-pctL):0;
+    const isNow = parseInt(m)===nowDate().getMonth() && tahunPilih===tahunNow;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;cursor:pointer" onclick="document.getElementById('bln-body-${m}')?.classList.toggle('open')">
+      <div style="font-size:9px;font-weight:700;color:${total>0?'#dc2626':'#93c5fd'}">${total>0?fmtAbs(total):''}</div>
+      <div style="width:100%;border-radius:6px 6px 0 0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;height:${pct}px;min-height:${total>0?8:4}px;background:#f0f7ff;border:1.5px solid ${isNow?'#1a56db':'transparent'};transition:height .5s ease">
+        ${pctB>0?`<div style="width:100%;height:${pctB}%;background:linear-gradient(180deg,#dc2626,#f87171);min-height:3px"></div>`:''}
+        ${pctL>0?`<div style="width:100%;height:${pctL}%;background:linear-gradient(180deg,#059669,#34d399);min-height:3px"></div>`:''}
+        ${pctH>0?`<div style="width:100%;height:${pctH}%;background:linear-gradient(180deg,#9ca3af,#d1d5db);min-height:3px"></div>`:''}
+      </div>
+      <div style="font-size:9px;color:${isNow?'#1a56db':'#93c5fd'};font-weight:${isNow?'700':'500'};text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%">
+        ${BULAN_ID[m].slice(0,3)}${isNow?' ◉':''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Accordion per bulan
+  const acc = document.getElementById('rekap-accordion');
+  const bulanAda = Object.keys(perBulan).filter(m=>perBulan[m].length>0).sort((a,b)=>b-a);
+  if(bulanAda.length===0){
+    acc.innerHTML='<div class="glass p-8 text-center text-blue-300">Tidak ada catatan mines di tahun '+tahunPilih+'.</div>';
+    return;
+  }
+  acc.innerHTML = bulanAda.map(m=>{
+    const arr    = perBulan[m];
+    const belum  = arr.filter(c=>c.status==='belum_lunas').reduce((a,c)=>a+c.nominal,0);
+    const lunas  = arr.filter(c=>c.status==='lunas').reduce((a,c)=>a+c.nominal,0);
+    const dihapus= arr.filter(c=>c.status==='dihapus').reduce((a,c)=>a+c.nominal,0);
+    const total  = arr.filter(c=>c.status!=='dihapus').reduce((a,c)=>a+c.nominal,0);
+    const namaB  = BULAN_ID[m]+' '+tahunPilih;
+    const statusMap={belum_lunas:['⚠','text-orange-500','Belum Lunas'],lunas:['✅','text-emerald-600','Lunas'],dihapus:['🗑','text-gray-400','Dihapuskan']};
+    const totalBar = belum+lunas+dihapus;
+    const pctBelum = totalBar>0?Math.round(belum/totalBar*100):0;
+    const pctLunas = totalBar>0?Math.round(lunas/totalBar*100):0;
+    return `<div class="bulan-card">
+      <div class="bulan-header" onclick="toggleBulan('bln-body-${m}')">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center font-display text-white text-sm" style="background:linear-gradient(135deg,#1a56db,#5b21b6)">${parseInt(m)+1}</div>
+          <div>
+            <div class="font-display text-sm text-blue-900">${namaB}</div>
+            <div class="text-xs text-blue-400">${arr.length} catatan mines</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <div class="font-display text-base ${total>0?'text-red-500':'text-emerald-600'}">${fmtAbs(total)}</div>
+            <div class="text-xs text-blue-400">${belum>0?'Belum: '+fmtAbs(belum):'Semua lunas ✅'}</div>
+          </div>
+          <div id="bln-chevron-${m}" style="color:#93c5fd;transition:transform .3s">▼</div>
+        </div>
+      </div>
+      <!-- Progress bar -->
+      <div style="padding:0 22px;margin-bottom:-1px">
+        <div class="rekap-summary-bar" style="height:6px;border-radius:6px">
+          <div class="bar-mines" style="width:${pctBelum}%"></div>
+          <div class="bar-aman" style="width:${pctLunas}%"></div>
+          <div style="flex:1;background:#e5e7eb"></div>
+        </div>
+      </div>
+      <div class="bulan-body" id="bln-body-${m}">
+        <!-- Sub-stats -->
+        <div class="flex flex-wrap gap-3 px-5 py-4" style="background:#f8fbff">
+          <div class="text-xs font-semibold" style="color:#dc2626">⚠ Belum Lunas: <b>${fmtAbs(belum)}</b> (${arr.filter(c=>c.status==='belum_lunas').length}x)</div>
+          <div class="text-xs font-semibold text-emerald-600">✅ Lunas: <b>${fmtAbs(lunas)}</b> (${arr.filter(c=>c.status==='lunas').length}x)</div>
+          <div class="text-xs font-semibold text-gray-400">🗑 Dihapuskan: <b>${fmtAbs(dihapus)}</b> (${arr.filter(c=>c.status==='dihapus').length}x)</div>
+        </div>
+        <div class="overflow-x-auto">
+          <table style="margin:0">
+            <thead><tr><th>Tanggal</th><th>Shift</th><th>Alasan / Keterangan</th><th>Status</th><th class="text-right">Nominal</th></tr></thead>
+            <tbody>
+              ${arr.sort((a,b)=>a.tanggal>b.tanggal?1:-1).map(c=>{
+                const [ico,tc,lbl]=statusMap[c.status]||statusMap.belum_lunas;
+                const tgl=c.tanggal?new Date(c.tanggal+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short'}):'-';
+                return `<tr>
+                  <td class="text-blue-400 text-xs">${tgl}</td>
+                  <td class="text-xs text-blue-500">Shift #${c.shift||'-'}</td>
+                  <td class="text-blue-800">${c.alasan}</td>
+                  <td><span class="${tc} text-xs font-semibold">${ico} ${lbl}</span></td>
+                  <td class="text-right font-semibold text-red-500">${fmtAbs(c.nominal)}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+        <!-- Ringkasan Total Bawah -->
+        <div class="flex flex-wrap justify-between items-center px-5 py-3" style="background:#f0f7ff;border-top:1.5px solid #dbeafe">
+          <span class="text-xs text-blue-400 font-semibold">Total Mines ${namaB} (aktif)</span>
+          <span class="font-display text-base ${total>0?'text-red-500':'text-emerald-600'}">${fmtAbs(total)}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleBulan(id){
+  const body = document.getElementById(id);
+  if(!body) return;
+  body.classList.toggle('open');
+  const m = id.replace('bln-body-','');
+  const chev = document.getElementById('bln-chevron-'+m);
+  if(chev) chev.style.transform = body.classList.contains('open')?'rotate(180deg)':'';
+}
+
 // ═══ STATUS FIREBASE ═══
 function setFbStatus(state){
   const el = document.getElementById('fb-status');
   const lbl = document.getElementById('fb-label');
   el.className = state;
-  if(state==='online'){ lbl.textContent='Firebase: Online'; }
-  else if(state==='offline'){ lbl.textContent='Firebase: Offline'; }
-  else { lbl.textContent='Menghubungkan...'; }
+  if(state==='online') lbl.textContent='Firebase: Online';
+  else if(state==='offline') lbl.textContent='Firebase: Offline';
+  else lbl.textContent='Menghubungkan...';
 }
 
 // ═══ SETUP MODAL ═══
@@ -721,26 +1169,26 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('page-date').textContent = todayFmt();
   document.getElementById('greeting-date').textContent = nowDate().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('c-waktu').value = timeNow();
+  document.getElementById('cm-tanggal').value = todayStr();
+  document.getElementById('cm-shift').value = shiftNum;
   document.getElementById('c-jumlah').addEventListener('input', updatePreview);
+  document.getElementById('cm-nominal').addEventListener('input', updateCatatanPreview);
+  document.getElementById('cm-alasan').addEventListener('input', updateCatatanPreview);
   document.getElementById('kasir-id').value = kasirId;
   updatePathDisplay();
   updatePreview();
+  filterCatatan('semua');
 
   if(window._fbReady){
     subscribeShift();
+    subscribeCatatan();
   } else {
-    document.addEventListener('fb-ready', ()=>{ subscribeShift(); });
-    // Cek apakah config masih default
-    setTimeout(()=>{
-      if(!window._fbReady) setFbStatus('offline');
-    }, 3000);
+    document.addEventListener('fb-ready', ()=>{ subscribeShift(); subscribeCatatan(); });
+    setTimeout(()=>{ if(!window._fbReady) setFbStatus('offline'); }, 3000);
   }
-
-  // Deteksi jika config masih GANTI_...
   setTimeout(()=>{
     if(document.getElementById('fb-status').classList.contains('connecting')){
       setFbStatus('offline');
-      // Tampilkan setup modal otomatis jika belum pernah setup
       if(!localStorage.getItem('fb_setup_seen')){ showSetup(); localStorage.setItem('fb_setup_seen','1'); }
     }
   }, 4000);
